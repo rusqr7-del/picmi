@@ -1487,8 +1487,7 @@
 
         <!-- Вкладка: Главная -->
         <div id="tab-main" class="tab-content active">
-            <div class="stats-grid" id="myStats"></div>
-            <h2 style="margin-top: 30px;">Участники</h2>
+            <h2>Участники</h2>
             <div id="usersList"></div>
         </div>
 
@@ -1713,7 +1712,6 @@
                 loadTheme();
                 
                 // Загружаем данные последовательно чтобы не слетало
-                await loadMyStats();
                 await loadUsers();
             } catch (error) {
                 console.error('Error showing main page:', error);
@@ -2666,7 +2664,6 @@
                 
                 setTimeout(() => {
                     closeVoteModal();
-                    loadMyStats();
                     loadUsers();
                     // Обновляем рейтинг если открыта вкладка календаря
                     if (document.getElementById('tab-calendar').classList.contains('active')) {
