@@ -927,41 +927,115 @@
 
         /* Адаптивность для телефона */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
             .container {
-                padding: 20px;
+                padding: 15px;
                 margin: 10px auto;
+                border-radius: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+
+            h2 {
+                font-size: 1.2em;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .header > div:first-child {
+                width: 100%;
+            }
+
+            .header > div:last-child {
+                width: 100%;
+                justify-content: space-between;
             }
 
             .tabs {
                 flex-wrap: wrap;
                 gap: 5px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
 
             .tab {
-                padding: 8px 12px;
-                font-size: 14px;
+                padding: 10px 15px;
+                font-size: 13px;
+                white-space: nowrap;
+                min-width: auto;
             }
 
             .stats-grid {
                 grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 24px;
             }
 
             .user-card {
                 padding: 15px;
+                margin-bottom: 10px;
             }
 
             .user-info {
                 flex-direction: column;
                 text-align: center;
+                gap: 10px;
+            }
+
+            .user-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            .user-name {
+                font-size: 16px;
             }
 
             .rating-display {
                 justify-content: center;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+
+            .total-rating {
+                font-size: 20px;
             }
 
             .modal-content {
                 padding: 20px;
                 max-width: 95%;
+                max-height: 90vh;
+            }
+
+            .calendar {
+                padding: 15px;
+            }
+
+            .calendar-header {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .calendar-month {
+                font-size: 16px;
             }
 
             .calendar-grid {
@@ -969,8 +1043,14 @@
             }
 
             .calendar-day {
-                font-size: 12px;
+                font-size: 11px;
                 padding: 5px;
+                min-height: 35px;
+            }
+
+            .calendar-day-header {
+                font-size: 10px;
+                padding: 8px 4px;
             }
 
             .profile-gallery {
@@ -980,6 +1060,19 @@
 
             .cringe-stats {
                 grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .cringe-stat-value {
+                font-size: 36px;
+            }
+
+            .cringe-timeline-item {
+                padding: 15px;
+            }
+
+            .pikmi-rating-calendar {
+                padding: 15px;
             }
 
             .pikmi-rating-content {
@@ -989,13 +1082,73 @@
 
             .pikmi-rating-item {
                 min-width: 100%;
-                padding: 10px;
+                padding: 15px;
                 background: #f8f9fa;
                 border-radius: 8px;
             }
 
+            .pikmi-rating-winner {
+                font-size: 18px;
+            }
+
+            .slider-container {
+                margin: 15px 0;
+            }
+
+            .slider-value-display {
+                font-size: 36px;
+            }
+
+            .slider-quick-buttons {
+                gap: 8px;
+            }
+
+            .slider-quick-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .profile-stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .profile-stat-value {
+                font-size: 28px;
+            }
+
+            .action-item {
+                padding: 12px;
+            }
+
+            .action-photo {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .settings-item {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .btn-small {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
             body.dark-theme .pikmi-rating-item {
                 background: #3a3a3a;
+            }
+
+            /* Улучшения для кнопок на мобильных */
+            button {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            .user-card button {
+                padding: 10px;
+                font-size: 13px;
             }
         }
 
@@ -1040,10 +1193,6 @@
                 <div style="color: #666; margin-top: 5px;">Привет, <span id="currentUserName" style="font-weight: 600; color: #667eea;"></span>!</div>
             </div>
             <div style="display: flex; gap: 10px; align-items: center;">
-                <label class="toggle-switch" style="margin-right: 10px;" title="Темная тема">
-                    <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
-                    <span class="toggle-slider"></span>
-                </label>
                 <button class="btn-secondary btn-small" onclick="openSettings()">⚙️ Настройки</button>
                 <button class="btn-danger btn-small" onclick="logout()">Выйти</button>
             </div>
@@ -1296,7 +1445,10 @@
 
         // Переключение темы
         function toggleTheme() {
-            const isDark = document.getElementById('themeToggle').checked;
+            const toggle = document.getElementById('themeToggleSettings') || document.getElementById('themeToggle');
+            if (!toggle) return;
+            
+            const isDark = toggle.checked;
             if (isDark) {
                 document.body.classList.add('dark-theme');
                 localStorage.setItem('theme', 'dark');
@@ -1304,13 +1456,22 @@
                 document.body.classList.remove('dark-theme');
                 localStorage.setItem('theme', 'light');
             }
+            
+            // Синхронизируем оба переключателя если они есть
+            const toggle1 = document.getElementById('themeToggleSettings');
+            const toggle2 = document.getElementById('themeToggle');
+            if (toggle1 && toggle2) {
+                toggle1.checked = isDark;
+                toggle2.checked = isDark;
+            }
         }
 
         function loadTheme() {
             const theme = localStorage.getItem('theme');
             if (theme === 'dark') {
                 document.body.classList.add('dark-theme');
-                document.getElementById('themeToggle').checked = true;
+                const toggle = document.getElementById('themeToggleSettings') || document.getElementById('themeToggle');
+                if (toggle) toggle.checked = true;
             }
         }
 
@@ -1367,12 +1528,12 @@
                 const monthAgo = new Date(today);
                 monthAgo.setMonth(monthAgo.getMonth() - 1);
 
-                // Рейтинг дня
+                // Рейтинг дня (теперь pikmi может быть больше 1)
                 const dayScores = allScores.filter(s => new Date(s.created_at) >= today);
                 const dayRatings = {};
                 dayScores.forEach(s => {
-                    if (s.pikmi === 1) {
-                        dayRatings[s.user_name] = (dayRatings[s.user_name] || 0) + 1;
+                    if (s.pikmi > 0) {
+                        dayRatings[s.user_name] = (dayRatings[s.user_name] || 0) + (s.pikmi || 0);
                     }
                 });
                 const dayKeys = Object.keys(dayRatings);
@@ -1380,12 +1541,12 @@
                     ? dayKeys.reduce((a, b) => dayRatings[a] > dayRatings[b] ? a : b)
                     : 'Нет данных';
 
-                // Рейтинг недели
+                // Рейтинг недели (теперь pikmi может быть больше 1)
                 const weekScores = allScores.filter(s => new Date(s.created_at) >= weekAgo);
                 const weekRatings = {};
                 weekScores.forEach(s => {
-                    if (s.pikmi === 1) {
-                        weekRatings[s.user_name] = (weekRatings[s.user_name] || 0) + 1;
+                    if (s.pikmi > 0) {
+                        weekRatings[s.user_name] = (weekRatings[s.user_name] || 0) + (s.pikmi || 0);
                     }
                 });
                 const weekKeys = Object.keys(weekRatings);
@@ -1393,12 +1554,12 @@
                     ? weekKeys.reduce((a, b) => weekRatings[a] > weekRatings[b] ? a : b)
                     : 'Нет данных';
 
-                // Рейтинг месяца
+                // Рейтинг месяца (теперь pikmi может быть больше 1)
                 const monthScores = allScores.filter(s => new Date(s.created_at) >= monthAgo);
                 const monthRatings = {};
                 monthScores.forEach(s => {
-                    if (s.pikmi === 1) {
-                        monthRatings[s.user_name] = (monthRatings[s.user_name] || 0) + 1;
+                    if (s.pikmi > 0) {
+                        monthRatings[s.user_name] = (monthRatings[s.user_name] || 0) + (s.pikmi || 0);
                     }
                 });
                 const monthKeys = Object.keys(monthRatings);
@@ -1537,7 +1698,7 @@
                     <h3 style="margin: 20px 0;">События ${date.toLocaleDateString('ru-RU')}</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
                         ${scores.map(score => {
-                            const type = score.pikmi === 1 ? 'pikmi' : 'eball';
+                            const type = (score.pikmi || 0) > 0 ? 'pikmi' : 'eball';
                             const typeText = type === 'pikmi' ? '⭐ Pikmi Move' : '⚠️ E-Ball';
                             const typeClass = type === 'pikmi' ? 'action-type-pikmi' : 'action-type-eball';
                             const time = new Date(score.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
@@ -1586,17 +1747,18 @@
 
                 if (usersError) throw usersError;
 
-                // Подсчитываем общий рейтинг
+                // Подсчитываем общий рейтинг (теперь pikmi и eball могут быть больше 1)
                 const ratings = {};
                 users.forEach(user => {
                     const userScores = allScores.filter(s => s.user_name === user.name);
-                    const pikmiCount = userScores.filter(s => s.pikmi === 1).reduce((sum, s) => sum + s.pikmi, 0);
-                    const eballCount = userScores.filter(s => s.eball === 1).reduce((sum, s) => sum + s.eball, 0);
+                    const pikmiCount = userScores.reduce((sum, s) => sum + (s.pikmi || 0), 0);
+                    const eballCount = userScores.reduce((sum, s) => sum + (s.eball || 0), 0);
                     ratings[user.name] = {
                         pikmi: pikmiCount,
                         eball: eballCount,
                         total: pikmiCount - eballCount,
-                        photo: user.photo_url
+                        photo: user.photo_url,
+                        login: user.login
                     };
                 });
 
@@ -1606,7 +1768,7 @@
                     .map(([name, data]) => ({ name, ...data }));
 
                 const votingHTML = `
-                    <h2 style="margin-bottom: 30px; text-align: center;">🏆 Общий рейтинг участников</h2>
+                    <h2 style="margin-bottom: 30px; text-align: center;">🏆 Голосование за участников</h2>
                     <div style="display: grid; gap: 20px;">
                         ${sortedUsers.map((user, index) => {
                             const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
@@ -1614,17 +1776,26 @@
                                 ? `<img src="${user.photo}" alt="${user.name}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #667eea;">`
                                 : `<div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 32px; border: 3px solid #667eea;">${user.name.charAt(0).toUpperCase()}</div>`;
                             
+                            // Проверяем, можем ли мы голосовать за этого пользователя
+                            const canVote = user.login !== currentUser.login;
+                            
                             return `
-                                <div class="user-card" style="display: flex; align-items: center; gap: 20px; padding: 25px;">
+                                <div class="user-card" style="display: flex; align-items: center; gap: 20px; padding: 25px; flex-wrap: wrap;">
                                     <div style="font-size: 32px; font-weight: bold; min-width: 60px; text-align: center;">${medal}</div>
                                     ${avatarHTML}
-                                    <div style="flex: 1;">
+                                    <div style="flex: 1; min-width: 200px;">
                                         <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">${user.name}</div>
-                                        <div style="display: flex; gap: 30px; font-size: 16px;">
+                                        <div style="display: flex; gap: 20px; font-size: 16px; flex-wrap: wrap; margin-bottom: 15px;">
                                             <div><span style="color: #27ae60; font-weight: bold;">⭐ ${user.pikmi}</span> Pikmi</div>
                                             <div><span style="color: #e74c3c; font-weight: bold;">⚠️ ${user.eball}</span> E-Ball</div>
                                             <div><span style="color: #667eea; font-weight: bold; font-size: 20px;">📊 ${user.total}</span> Рейтинг</div>
                                         </div>
+                                        ${canVote ? `
+                                            <div style="display: flex; gap: 10px;">
+                                                <button onclick="quickVote('${user.name}', 'pikmi')" class="btn-success btn-small" style="flex: 1;">👍 +1 Pikmi</button>
+                                                <button onclick="quickVote('${user.name}', 'eball')" class="btn-danger btn-small" style="flex: 1;">👎 +1 E-Ball</button>
+                                            </div>
+                                        ` : '<div style="color: #999; font-size: 14px;">Это вы</div>'}
                                     </div>
                                 </div>
                             `;
@@ -1635,6 +1806,44 @@
                 document.getElementById('votingContent').innerHTML = votingHTML;
             } catch (error) {
                 console.error('Load voting tab error:', error);
+            }
+        }
+
+        // Быстрое голосование из вкладки Голосование
+        async function quickVote(userName, voteType) {
+            if (!confirm(`Поставить ${voteType === 'pikmi' ? 'Pikmi Move' : 'E-Ball'} для ${userName}?`)) {
+                return;
+            }
+
+            try {
+                const record = {
+                    user_name: userName,
+                    voter_login: currentUser.login,
+                    voter_name: currentUser.name,
+                    pikmi: voteType === 'pikmi' ? 1 : 0,
+                    eball: voteType === 'eball' ? 1 : 0,
+                    proof_text: `Быстрое голосование из раздела "Голосование"`,
+                    proof_file_url: null,
+                    proof_file_name: null,
+                    proof_file_type: null
+                };
+
+                const { error: insertError } = await supabaseClient
+                    .from('scores')
+                    .insert(record);
+
+                if (insertError) {
+                    console.error('Insert error:', insertError);
+                    throw insertError;
+                }
+
+                alert(`✅ ${voteType === 'pikmi' ? 'Pikmi Move' : 'E-Ball'} успешно поставлен!`);
+                loadVotingTab();
+                loadMyStats();
+                loadUsers();
+            } catch (error) {
+                console.error('Quick vote error:', error);
+                alert('Ошибка: ' + error.message);
             }
         }
 
@@ -1655,8 +1864,8 @@
                 if (usersError) throw usersError;
 
                 // Статистика
-                const totalPikmi = allScores.filter(s => s.pikmi === 1).length;
-                const totalEball = allScores.filter(s => s.eball === 1).length;
+                const totalPikmi = allScores.reduce((sum, s) => sum + (s.pikmi || 0), 0);
+                const totalEball = allScores.reduce((sum, s) => sum + (s.eball || 0), 0);
                 const totalActions = allScores.length;
                 const uniqueUsers = new Set(allScores.map(s => s.user_name)).size;
 
@@ -1699,8 +1908,8 @@
                         <h2 style="margin-bottom: 20px;">📅 История по датам</h2>
                         ${dates.map(date => {
                             const dayScores = scoresByDate[date];
-                            const dayPikmi = dayScores.filter(s => s.pikmi === 1).length;
-                            const dayEball = dayScores.filter(s => s.eball === 1).length;
+                            const dayPikmi = dayScores.reduce((sum, s) => sum + (s.pikmi || 0), 0);
+                            const dayEball = dayScores.reduce((sum, s) => sum + (s.eball || 0), 0);
                             
                             return `
                                 <div class="cringe-timeline-item" style="cursor: pointer;" onclick="switchToCalendarDate('${date}')">
@@ -1712,7 +1921,7 @@
                                     </div>
                                     <div style="max-height: 200px; overflow-y: auto;">
                                         ${dayScores.map(score => {
-                                            const type = score.pikmi === 1 ? 'pikmi' : 'eball';
+                                            const type = (score.pikmi || 0) > 0 ? 'pikmi' : 'eball';
                                             const typeText = type === 'pikmi' ? '⭐' : '⚠️';
                                             const time = new Date(score.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
                                             return `
@@ -1759,8 +1968,8 @@
                 const user = users && users.length > 0 ? users[0] : null;
                 const userPhotoUrl = user?.photo_url || '';
 
-                const pikmiCount = myScores.filter(s => s.pikmi === 1).reduce((sum, s) => sum + s.pikmi, 0);
-                const eballCount = myScores.filter(s => s.eball === 1).reduce((sum, s) => sum + s.eball, 0);
+                const pikmiCount = myScores.reduce((sum, s) => sum + (s.pikmi || 0), 0);
+                const eballCount = myScores.reduce((sum, s) => sum + (s.eball || 0), 0);
                 const totalRating = pikmiCount - eballCount;
 
                 // Получаем все файлы для галереи
@@ -1827,7 +2036,7 @@
                                 ? '<p style="text-align: center; color: #999; padding: 20px;">Пока нет оценок</p>'
                                 : myScores.map(action => {
                                     const date = new Date(action.created_at).toLocaleString('ru-RU');
-                                    const type = action.pikmi === 1 ? 'pikmi' : 'eball';
+                                    const type = (action.pikmi || 0) > 0 ? 'pikmi' : 'eball';
                                     const typeText = type === 'pikmi' ? '⭐ Pikmi Move' : '⚠️ E-Ball';
                                     const typeClass = type === 'pikmi' ? 'action-type-pikmi' : 'action-type-eball';
                                     
@@ -1856,6 +2065,7 @@
 
         // Настройки
         function openSettings() {
+            const currentTheme = localStorage.getItem('theme') === 'dark';
             const settingsHTML = `
                 <div class="settings-section">
                     <div class="settings-section-title">👤 Профиль</div>
@@ -1883,8 +2093,11 @@
                 <div class="settings-section">
                     <div class="settings-section-title">🎨 Внешний вид</div>
                     <div class="settings-item">
-                        <div class="settings-item-label">Тема</div>
-                        <div class="settings-item-value">Светлая</div>
+                        <div class="settings-item-label">Темная тема</div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="themeToggleSettings" ${currentTheme ? 'checked' : ''} onchange="toggleTheme()">
+                            <span class="toggle-slider"></span>
+                        </label>
                     </div>
                 </div>
 
@@ -1934,8 +2147,8 @@
 
                 if (error) throw error;
 
-                const pikmiCount = myActions.filter(a => a.pikmi === 1).reduce((sum, a) => sum + a.pikmi, 0);
-                const eballCount = myActions.filter(a => a.eball === 1).reduce((sum, a) => sum + a.eball, 0);
+                const pikmiCount = myActions.reduce((sum, a) => sum + (a.pikmi || 0), 0);
+                const eballCount = myActions.reduce((sum, a) => sum + (a.eball || 0), 0);
                 const totalRating = pikmiCount - eballCount;
 
                 const statsHtml = `
@@ -1979,9 +2192,9 @@
                 users.forEach(user => {
                     if (user.login === currentUser.login) return;
 
-                    const userScores = allScores.filter(s => s.user_name === user.name);
-                    const pikmiCount = userScores.filter(s => s.pikmi === 1).reduce((sum, s) => sum + s.pikmi, 0);
-                    const eballCount = userScores.filter(s => s.eball === 1).reduce((sum, s) => sum + s.eball, 0);
+                const userScores = allScores.filter(s => s.user_name === user.name);
+                const pikmiCount = userScores.reduce((sum, s) => sum + (s.pikmi || 0), 0);
+                const eballCount = userScores.reduce((sum, s) => sum + (s.eball || 0), 0);
                     const totalRating = pikmiCount - eballCount;
 
                     const card = document.createElement('div');
@@ -2144,25 +2357,22 @@
                     fileUrl = urlData.publicUrl;
                 }
 
-                // Создаем записи (по количеству баллов)
-                const records = [];
-                for (let i = 0; i < amount; i++) {
-                    records.push({
-                        user_name: selectedUser,
-                        voter_login: currentUser.login,
-                        voter_name: currentUser.name,
-                        pikmi: voteType === 'pikmi' ? 1 : 0,
-                        eball: voteType === 'eball' ? 1 : 0,
-                        proof_text: proofText,
-                        proof_file_url: fileUrl,
-                        proof_file_name: fileName,
-                        proof_file_type: fileType
-                    });
-                }
+                // Создаем ОДНУ запись с количеством баллов
+                const record = {
+                    user_name: selectedUser,
+                    voter_login: currentUser.login,
+                    voter_name: currentUser.name,
+                    pikmi: voteType === 'pikmi' ? amount : 0,
+                    eball: voteType === 'eball' ? amount : 0,
+                    proof_text: proofText,
+                    proof_file_url: fileUrl,
+                    proof_file_name: fileName,
+                    proof_file_type: fileType
+                };
 
                 const { error: insertError } = await supabaseClient
                     .from('scores')
-                    .insert(records);
+                    .insert(record);
 
                 if (insertError) {
                     console.error('Insert error:', insertError);
@@ -2210,7 +2420,7 @@
                 } else {
                     actionsList.innerHTML = actions.map(action => {
                         const date = new Date(action.created_at).toLocaleString('ru-RU');
-                        const type = action.pikmi === 1 ? 'pikmi' : 'eball';
+                        const type = (action.pikmi || 0) > 0 ? 'pikmi' : 'eball';
                         const typeText = type === 'pikmi' ? '⭐ Pikmi Move' : '⚠️ E-Ball';
                         const typeClass = type === 'pikmi' ? 'action-type-pikmi' : 'action-type-eball';
                         
@@ -2270,8 +2480,8 @@
                 if (scoresError) throw scoresError;
 
                 // Подсчитываем статистику
-                const pikmiCount = allScores.filter(s => s.pikmi === 1).reduce((sum, s) => sum + s.pikmi, 0);
-                const eballCount = allScores.filter(s => s.eball === 1).reduce((sum, s) => sum + s.eball, 0);
+                const pikmiCount = allScores.reduce((sum, s) => sum + (s.pikmi || 0), 0);
+                const eballCount = allScores.reduce((sum, s) => sum + (s.eball || 0), 0);
                 const totalRating = pikmiCount - eballCount;
 
                 // Получаем все файлы для галереи
@@ -2339,7 +2549,7 @@
                                 ? '<p style="text-align: center; color: #999; padding: 20px;">Пока нет оценок</p>'
                                 : allScores.map(action => {
                                     const date = new Date(action.created_at).toLocaleString('ru-RU');
-                                    const type = action.pikmi === 1 ? 'pikmi' : 'eball';
+                                    const type = (action.pikmi || 0) > 0 ? 'pikmi' : 'eball';
                                     const typeText = type === 'pikmi' ? '⭐ Pikmi Move' : '⚠️ E-Ball';
                                     const typeClass = type === 'pikmi' ? 'action-type-pikmi' : 'action-type-eball';
                                     
