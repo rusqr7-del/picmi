@@ -2640,25 +2640,22 @@
                     fileUrl = urlData.publicUrl;
                 }
 
-                // Создаем несколько записей по 1 баллу каждая (для constraint в БД)
-                const records = [];
-                for (let i = 0; i < amount; i++) {
-                    records.push({
-                        user_name: selectedUser,
-                        voter_login: currentUser.login,
-                        voter_name: currentUser.name,
-                        pikmi: voteType === 'pikmi' ? 1 : 0,
-                        eball: voteType === 'eball' ? 1 : 0,
-                        proof_text: proofText,
-                        proof_file_url: fileUrl,
-                        proof_file_name: fileName,
-                        proof_file_type: fileType
-                    });
-                }
+                // Создаем ОДНУ запись с количеством баллов (от 1 до 10)
+                const record = {
+                    user_name: selectedUser,
+                    voter_login: currentUser.login,
+                    voter_name: currentUser.name,
+                    pikmi: voteType === 'pikmi' ? amount : 0,
+                    eball: voteType === 'eball' ? amount : 0,
+                    proof_text: proofText,
+                    proof_file_url: fileUrl,
+                    proof_file_name: fileName,
+                    proof_file_type: fileType
+                };
 
                 const { error: insertError } = await supabaseClient
                     .from('scores')
-                    .insert(records);
+                    .insert(record);
 
                 if (insertError) {
                     console.error('Insert error:', insertError);
