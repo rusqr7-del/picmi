@@ -845,7 +845,170 @@
         }
 
         .main-content {
-            padding-bottom: 100px;
+            padding-bottom: 20px;
+        }
+
+        /* Темная тема */
+        body.dark-theme {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        }
+
+        body.dark-theme .container {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme h1,
+        body.dark-theme h2 {
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .user-card {
+            background: #3a3a3a;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .user-card:hover {
+            background: #4a4a4a;
+        }
+
+        body.dark-theme .stat-card {
+            background: #3a3a3a;
+        }
+
+        body.dark-theme .modal-content {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .action-item {
+            background: #3a3a3a;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .calendar {
+            background: #3a3a3a;
+        }
+
+        body.dark-theme .calendar-day {
+            background: #2d2d2d;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+
+        body.dark-theme .calendar-day:hover {
+            background: #4a4a4a;
+        }
+
+        body.dark-theme .cringe-stat-card {
+            background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+        }
+
+        body.dark-theme .cringe-timeline-item {
+            background: #3a3a3a;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .settings-section {
+            background: #3a3a3a;
+        }
+
+        body.dark-theme input,
+        body.dark-theme select,
+        body.dark-theme textarea {
+            background: #2d2d2d;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+
+        body.dark-theme .profile-stat-card {
+            background: #3a3a3a;
+        }
+
+        /* Адаптивность для телефона */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px auto;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .tab {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .user-card {
+                padding: 15px;
+            }
+
+            .user-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .rating-display {
+                justify-content: center;
+            }
+
+            .modal-content {
+                padding: 20px;
+                max-width: 95%;
+            }
+
+            .calendar-grid {
+                gap: 4px;
+            }
+
+            .calendar-day {
+                font-size: 12px;
+                padding: 5px;
+            }
+
+            .profile-gallery {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1px;
+            }
+
+            .cringe-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .pikmi-rating-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .pikmi-rating-item {
+                min-width: 100%;
+                padding: 10px;
+                background: #f8f9fa;
+                border-radius: 8px;
+            }
+
+            body.dark-theme .pikmi-rating-item {
+                background: #3a3a3a;
+            }
+        }
+
+        .pikmi-rating-calendar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        body.dark-theme .pikmi-rating-calendar {
+            background: #3a3a3a;
         }
     </style>
 </head>
@@ -877,6 +1040,10 @@
                 <div style="color: #666; margin-top: 5px;">Привет, <span id="currentUserName" style="font-weight: 600; color: #667eea;"></span>!</div>
             </div>
             <div style="display: flex; gap: 10px; align-items: center;">
+                <label class="toggle-switch" style="margin-right: 10px;" title="Темная тема">
+                    <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+                    <span class="toggle-slider"></span>
+                </label>
                 <button class="btn-secondary btn-small" onclick="openSettings()">⚙️ Настройки</button>
                 <button class="btn-danger btn-small" onclick="logout()">Выйти</button>
             </div>
@@ -886,6 +1053,7 @@
         <div class="tabs">
             <button class="tab active" onclick="switchTab('main')">🏠 Главная</button>
             <button class="tab" onclick="switchTab('calendar')">📅 Календарь</button>
+            <button class="tab" onclick="switchTab('voting')">⭐ Голосование</button>
             <button class="tab" onclick="switchTab('cringe')">💀 КРИНЖ</button>
             <button class="tab" onclick="switchTab('myProfile')">👤 Мой профиль</button>
         </div>
@@ -899,8 +1067,14 @@
 
         <!-- Вкладка: Календарь -->
         <div id="tab-calendar" class="tab-content">
+            <div id="pikmiRatingCalendar"></div>
             <div id="calendarContainer"></div>
             <div id="calendarEvents"></div>
+        </div>
+
+        <!-- Вкладка: Голосование -->
+        <div id="tab-voting" class="tab-content">
+            <div id="votingContent"></div>
         </div>
 
         <!-- Вкладка: КРИНЖ -->
@@ -912,11 +1086,6 @@
         <div id="tab-myProfile" class="tab-content">
             <div id="myProfileContent"></div>
         </div>
-    </div>
-
-    <!-- Рейтинг пикми (всегда внизу) -->
-    <div id="pikmiRating" class="pikmi-rating hidden">
-        <div class="pikmi-rating-content" id="pikmiRatingContent"></div>
     </div>
 
     <!-- Модальное окно для оценки -->
@@ -938,10 +1107,22 @@
 
             <div class="input-group">
                 <label>Количество баллов</label>
-                <div class="number-input-group">
-                    <button onclick="changeAmount(-1)">−</button>
-                    <input type="number" id="voteAmount" value="1" min="1" max="10" readonly>
-                    <button onclick="changeAmount(1)">+</button>
+                <div class="slider-container">
+                    <div class="slider-value-display" id="sliderValueDisplay">1</div>
+                    <div class="slider-wrapper">
+                        <input type="range" id="voteAmountSlider" class="slider" min="1" max="10" value="1" step="1" oninput="updateSliderValue(this.value)">
+                        <div class="slider-labels">
+                            <span>1</span>
+                            <span>10</span>
+                        </div>
+                    </div>
+                    <div class="slider-quick-buttons">
+                        <div class="slider-quick-btn" onclick="setSliderValue(1)">1</div>
+                        <div class="slider-quick-btn" onclick="setSliderValue(3)">3</div>
+                        <div class="slider-quick-btn" onclick="setSliderValue(5)">5</div>
+                        <div class="slider-quick-btn" onclick="setSliderValue(7)">7</div>
+                        <div class="slider-quick-btn" onclick="setSliderValue(10)">10</div>
+                    </div>
                 </div>
             </div>
 
@@ -1107,11 +1288,30 @@
         async function showMainPage() {
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('mainPage').classList.remove('hidden');
-            document.getElementById('pikmiRating').classList.remove('hidden');
             document.getElementById('currentUserName').textContent = currentUser.name;
+            loadTheme();
             await loadMyStats();
             await loadUsers();
-            await loadPikmiRating();
+        }
+
+        // Переключение темы
+        function toggleTheme() {
+            const isDark = document.getElementById('themeToggle').checked;
+            if (isDark) {
+                document.body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function loadTheme() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+                document.getElementById('themeToggle').checked = true;
+            }
         }
 
         // Переключение вкладок
@@ -1123,7 +1323,7 @@
             // Добавляем активный класс выбранной вкладке
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach((tab, index) => {
-                const tabNames = ['main', 'calendar', 'cringe', 'myProfile'];
+                const tabNames = ['main', 'calendar', 'voting', 'cringe', 'myProfile'];
                 if (tabNames[index] === tabName) {
                     tab.classList.add('active');
                 }
@@ -1133,6 +1333,9 @@
             // Загружаем контент вкладки
             if (tabName === 'calendar') {
                 loadCalendar();
+                loadPikmiRating();
+            } else if (tabName === 'voting') {
+                loadVotingTab();
             } else if (tabName === 'cringe') {
                 loadCringeTab();
             } else if (tabName === 'myProfile') {
@@ -1140,8 +1343,10 @@
             }
         }
 
-        // Загрузить рейтинг пикми
+        // Загрузить рейтинг пикми (для календаря)
         async function loadPikmiRating() {
+            const container = document.getElementById('pikmiRatingCalendar');
+            if (!container) return;
             try {
                 const { data: allScores, error } = await supabaseClient
                     .from('scores')
@@ -1219,7 +1424,7 @@
                     </div>
                 `;
 
-                document.getElementById('pikmiRatingContent').innerHTML = ratingHTML;
+                container.innerHTML = `<div class="pikmi-rating-calendar">${ratingHTML}</div>`;
             } catch (error) {
                 console.error('Load pikmi rating error:', error);
             }
@@ -1330,31 +1535,106 @@
 
                 const eventsHTML = `
                     <h3 style="margin: 20px 0;">События ${date.toLocaleDateString('ru-RU')}</h3>
-                    ${scores.map(score => {
-                        const type = score.pikmi === 1 ? 'pikmi' : 'eball';
-                        const typeText = type === 'pikmi' ? '⭐ Pikmi Move' : '⚠️ E-Ball';
-                        const typeClass = type === 'pikmi' ? 'action-type-pikmi' : 'action-type-eball';
-                        const time = new Date(score.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-                        
-                        return `
-                            <div class="action-item">
-                                <div class="action-header">
-                                    <span class="${typeClass}">${typeText}</span>
-                                    <span style="color: #999; font-size: 12px;">${time}</span>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                        ${scores.map(score => {
+                            const type = score.pikmi === 1 ? 'pikmi' : 'eball';
+                            const typeText = type === 'pikmi' ? '⭐ Pikmi Move' : '⚠️ E-Ball';
+                            const typeClass = type === 'pikmi' ? 'action-type-pikmi' : 'action-type-eball';
+                            const time = new Date(score.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                            const isVideo = score.proof_file_type && score.proof_file_type.startsWith('video/');
+                            
+                            return `
+                                <div class="action-item">
+                                    <div class="action-header">
+                                        <span class="${typeClass}">${typeText}</span>
+                                        <span style="color: #999; font-size: 12px;">${time}</span>
+                                    </div>
+                                    <div style="color: #666; font-size: 14px; margin-bottom: 5px;">
+                                        ${score.user_name} ← ${score.voter_name}
+                                    </div>
+                                    <div class="action-text">${score.proof_text || 'Без описания'}</div>
+                                    ${score.proof_file_url ? `
+                                        ${isVideo 
+                                            ? `<video src="${score.proof_file_url}" class="action-photo" controls style="width: 100%; border-radius: 8px;"></video>`
+                                            : `<img src="${score.proof_file_url}" class="action-photo" alt="Доказательство" style="cursor: pointer;" onclick="window.open('${score.proof_file_url}', '_blank')">`
+                                        }
+                                    ` : ''}
                                 </div>
-                                <div style="color: #666; font-size: 14px; margin-bottom: 5px;">
-                                    ${score.user_name} ← ${score.voter_name}
-                                </div>
-                                <div class="action-text">${score.proof_text || 'Без описания'}</div>
-                                ${score.proof_file_url ? `<img src="${score.proof_file_url}" class="action-photo" alt="Доказательство">` : ''}
-                            </div>
-                        `;
-                    }).join('')}
+                            `;
+                        }).join('')}
+                    </div>
                 `;
 
                 document.getElementById('calendarEvents').innerHTML = eventsHTML;
             } catch (error) {
                 console.error('Show calendar day error:', error);
+            }
+        }
+
+        // Загрузить вкладку Голосование
+        async function loadVotingTab() {
+            try {
+                const { data: allScores, error } = await supabaseClient
+                    .from('scores')
+                    .select('*');
+
+                if (error) throw error;
+
+                const { data: users, error: usersError } = await supabaseClient
+                    .from('users')
+                    .select('*');
+
+                if (usersError) throw usersError;
+
+                // Подсчитываем общий рейтинг
+                const ratings = {};
+                users.forEach(user => {
+                    const userScores = allScores.filter(s => s.user_name === user.name);
+                    const pikmiCount = userScores.filter(s => s.pikmi === 1).reduce((sum, s) => sum + s.pikmi, 0);
+                    const eballCount = userScores.filter(s => s.eball === 1).reduce((sum, s) => sum + s.eball, 0);
+                    ratings[user.name] = {
+                        pikmi: pikmiCount,
+                        eball: eballCount,
+                        total: pikmiCount - eballCount,
+                        photo: user.photo_url
+                    };
+                });
+
+                // Сортируем по общему рейтингу
+                const sortedUsers = Object.entries(ratings)
+                    .sort((a, b) => b[1].total - a[1].total)
+                    .map(([name, data]) => ({ name, ...data }));
+
+                const votingHTML = `
+                    <h2 style="margin-bottom: 30px; text-align: center;">🏆 Общий рейтинг участников</h2>
+                    <div style="display: grid; gap: 20px;">
+                        ${sortedUsers.map((user, index) => {
+                            const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+                            const avatarHTML = user.photo
+                                ? `<img src="${user.photo}" alt="${user.name}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #667eea;">`
+                                : `<div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 32px; border: 3px solid #667eea;">${user.name.charAt(0).toUpperCase()}</div>`;
+                            
+                            return `
+                                <div class="user-card" style="display: flex; align-items: center; gap: 20px; padding: 25px;">
+                                    <div style="font-size: 32px; font-weight: bold; min-width: 60px; text-align: center;">${medal}</div>
+                                    ${avatarHTML}
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">${user.name}</div>
+                                        <div style="display: flex; gap: 30px; font-size: 16px;">
+                                            <div><span style="color: #27ae60; font-weight: bold;">⭐ ${user.pikmi}</span> Pikmi</div>
+                                            <div><span style="color: #e74c3c; font-weight: bold;">⚠️ ${user.eball}</span> E-Ball</div>
+                                            <div><span style="color: #667eea; font-weight: bold; font-size: 20px;">📊 ${user.total}</span> Рейтинг</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+
+                document.getElementById('votingContent').innerHTML = votingHTML;
+            } catch (error) {
+                console.error('Load voting tab error:', error);
             }
         }
 
@@ -1423,8 +1703,8 @@
                             const dayEball = dayScores.filter(s => s.eball === 1).length;
                             
                             return `
-                                <div class="cringe-timeline-item">
-                                    <div class="cringe-timeline-date">${date}</div>
+                                <div class="cringe-timeline-item" style="cursor: pointer;" onclick="switchToCalendarDate('${date}')">
+                                    <div class="cringe-timeline-date">${date} (нажмите для перехода в календарь)</div>
                                     <div style="display: flex; gap: 20px; margin-bottom: 15px;">
                                         <span style="color: #27ae60; font-weight: bold;">⭐ Pikmi: ${dayPikmi}</span>
                                         <span style="color: #e74c3c; font-weight: bold;">⚠️ E-Ball: ${dayEball}</span>
@@ -1625,6 +1905,25 @@
             document.getElementById('settingsModal').classList.add('hidden');
         }
 
+        // Переход к дате в календаре из КРИНЖ
+        function switchToCalendarDate(dateStr) {
+            // Переключаемся на вкладку календаря
+            switchTab('calendar');
+            
+            // Парсим дату и устанавливаем календарь
+            const [day, month, year] = dateStr.split('.');
+            currentCalendarDate = new Date(year, month - 1, day);
+            
+            // Загружаем календарь и показываем события этого дня
+            setTimeout(() => {
+                loadCalendar();
+                const dateKey = `${year}-${month - 1}-${day}`;
+                setTimeout(() => {
+                    showCalendarDay(dateKey);
+                }, 500);
+            }, 100);
+        }
+
         // Загрузить мою статистику
         async function loadMyStats() {
             try {
@@ -1731,12 +2030,14 @@
             selectedUser = userName;
             document.getElementById('voteModalTitle').textContent = `Оценить: ${userName}`;
             document.getElementById('voteType').value = '';
-            document.getElementById('voteAmount').value = '1';
+            document.getElementById('voteAmountSlider').value = '1';
+            document.getElementById('sliderValueDisplay').textContent = '1';
             document.getElementById('proofText').value = '';
             document.getElementById('proofFile').value = '';
             document.getElementById('fileLabel').textContent = '📎 Выберите файл';
             document.getElementById('voteTypeInfo').classList.add('hidden');
             document.getElementById('voteMessage').classList.add('hidden');
+            updateQuickButtons(1);
             document.getElementById('voteModal').classList.remove('hidden');
         }
 
@@ -1765,13 +2066,28 @@
             }
         }
 
-        // Изменить количество
-        function changeAmount(delta) {
-            const input = document.getElementById('voteAmount');
-            let value = parseInt(input.value) + delta;
-            if (value < 1) value = 1;
-            if (value > 10) value = 10;
-            input.value = value;
+        // Обновить значение слайдера
+        function updateSliderValue(value) {
+            document.getElementById('sliderValueDisplay').textContent = value;
+            updateQuickButtons(parseInt(value));
+        }
+
+        // Установить значение слайдера
+        function setSliderValue(value) {
+            document.getElementById('voteAmountSlider').value = value;
+            updateSliderValue(value);
+        }
+
+        // Обновить активные кнопки быстрого выбора
+        function updateQuickButtons(activeValue) {
+            const buttons = document.querySelectorAll('.slider-quick-btn');
+            buttons.forEach(btn => {
+                if (parseInt(btn.textContent) === activeValue) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
         }
 
         // Обновить имя файла
@@ -1786,7 +2102,7 @@
         // Отправить оценку
         async function submitVote() {
             const voteType = document.getElementById('voteType').value;
-            const amount = parseInt(document.getElementById('voteAmount').value);
+            const amount = parseInt(document.getElementById('voteAmountSlider').value);
             const proofText = document.getElementById('proofText').value.trim();
             const fileInput = document.getElementById('proofFile');
             const messageDiv = document.getElementById('voteMessage');
@@ -1859,7 +2175,14 @@
                     closeVoteModal();
                     loadMyStats();
                     loadUsers();
-                    loadPikmiRating();
+                    // Обновляем рейтинг если открыта вкладка календаря
+                    if (document.getElementById('tab-calendar').classList.contains('active')) {
+                        loadPikmiRating();
+                    }
+                    // Обновляем голосование если открыта вкладка
+                    if (document.getElementById('tab-voting').classList.contains('active')) {
+                        loadVotingTab();
+                    }
                 }, 2000);
 
             } catch (error) {
