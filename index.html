@@ -848,81 +848,219 @@
             padding-bottom: 20px;
         }
 
-        /* Темная тема */
+        /* Темная тема - только черное, серое, белый текст */
         body.dark-theme {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            background: #000000;
         }
 
         body.dark-theme .container {
-            background: #2d2d2d;
-            color: #e0e0e0;
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333333;
         }
 
         body.dark-theme h1,
         body.dark-theme h2 {
-            color: #e0e0e0;
+            color: #ffffff;
         }
 
         body.dark-theme .user-card {
-            background: #3a3a3a;
-            color: #e0e0e0;
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333333;
         }
 
         body.dark-theme .user-card:hover {
-            background: #4a4a4a;
+            background: #2a2a2a;
         }
 
         body.dark-theme .stat-card {
-            background: #3a3a3a;
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            color: #ffffff;
+        }
+
+        body.dark-theme .stat-label {
+            color: #cccccc;
         }
 
         body.dark-theme .modal-content {
-            background: #2d2d2d;
-            color: #e0e0e0;
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333333;
         }
 
         body.dark-theme .action-item {
-            background: #3a3a3a;
-            color: #e0e0e0;
+            background: #1a1a1a;
+            color: #ffffff;
+            border-left-color: #666666;
         }
 
         body.dark-theme .calendar {
-            background: #3a3a3a;
+            background: #1a1a1a;
+            border: 1px solid #333333;
         }
 
         body.dark-theme .calendar-day {
-            background: #2d2d2d;
-            color: #e0e0e0;
-            border-color: #555;
+            background: #0a0a0a;
+            color: #ffffff;
+            border-color: #333333;
         }
 
         body.dark-theme .calendar-day:hover {
-            background: #4a4a4a;
+            background: #2a2a2a;
+        }
+
+        body.dark-theme .calendar-day.has-events {
+            background: #2a2a2a;
+            border-color: #666666;
+        }
+
+        body.dark-theme .calendar-day.today {
+            border-color: #666666;
+        }
+
+        body.dark-theme .calendar-day-header {
+            color: #cccccc;
         }
 
         body.dark-theme .cringe-stat-card {
-            background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            color: #ffffff;
         }
 
         body.dark-theme .cringe-timeline-item {
-            background: #3a3a3a;
-            color: #e0e0e0;
+            background: #1a1a1a;
+            color: #ffffff;
+            border-left-color: #666666;
+        }
+
+        body.dark-theme .cringe-timeline-date {
+            color: #ffffff;
         }
 
         body.dark-theme .settings-section {
-            background: #3a3a3a;
+            background: #1a1a1a;
+            border: 1px solid #333333;
+        }
+
+        body.dark-theme .settings-section-title {
+            color: #ffffff;
+        }
+
+        body.dark-theme .settings-item-label {
+            color: #ffffff;
+        }
+
+        body.dark-theme .settings-item-value {
+            color: #cccccc;
         }
 
         body.dark-theme input,
         body.dark-theme select,
         body.dark-theme textarea {
-            background: #2d2d2d;
-            color: #e0e0e0;
-            border-color: #555;
+            background: #0a0a0a;
+            color: #ffffff;
+            border-color: #333333;
+        }
+
+        body.dark-theme input:focus,
+        body.dark-theme select:focus,
+        body.dark-theme textarea:focus {
+            border-color: #666666;
         }
 
         body.dark-theme .profile-stat-card {
-            background: #3a3a3a;
+            background: #1a1a1a;
+            border-color: #333333;
+            color: #ffffff;
+        }
+
+        body.dark-theme .profile-stat-label {
+            color: #cccccc;
+        }
+
+        body.dark-theme .pikmi-rating-calendar {
+            background: #1a1a1a;
+            border: 1px solid #333333;
+        }
+
+        body.dark-theme .pikmi-rating-title {
+            color: #cccccc;
+        }
+
+        body.dark-theme .pikmi-rating-winner {
+            color: #ffffff;
+        }
+
+        body.dark-theme .pikmi-rating-count {
+            color: #999999;
+        }
+
+        body.dark-theme .tab {
+            color: #cccccc;
+        }
+
+        body.dark-theme .tab.active {
+            color: #ffffff;
+            border-bottom-color: #ffffff;
+        }
+
+        body.dark-theme .tab:hover {
+            color: #ffffff;
+        }
+
+        body.dark-theme .action-type-pikmi {
+            color: #ffffff;
+        }
+
+        body.dark-theme .action-type-eball {
+            color: #ffffff;
+        }
+
+        body.dark-theme .action-text {
+            color: #cccccc;
+        }
+
+        body.dark-theme .user-name {
+            color: #ffffff;
+        }
+
+        body.dark-theme .pikmi-count,
+        body.dark-theme .eball-count,
+        body.dark-theme .total-rating {
+            color: #ffffff;
+        }
+
+        body.dark-theme label {
+            color: #ffffff;
+        }
+
+        body.dark-theme .modal-close {
+            color: #cccccc;
+        }
+
+        body.dark-theme .modal-close:hover {
+            color: #ffffff;
+        }
+
+        body.dark-theme .file-label {
+            background: #0a0a0a;
+            border-color: #333333;
+            color: #ffffff;
+        }
+
+        body.dark-theme .file-label:hover {
+            background: #1a1a1a;
+        }
+
+        body.dark-theme .slider {
+            background: #333333;
+        }
+
+        body.dark-theme .slider-labels {
+            color: #999999;
         }
 
         /* Адаптивность для телефона */
@@ -1265,13 +1403,6 @@
                             <span>10</span>
                         </div>
                     </div>
-                    <div class="slider-quick-buttons">
-                        <div class="slider-quick-btn" onclick="setSliderValue(1)">1</div>
-                        <div class="slider-quick-btn" onclick="setSliderValue(3)">3</div>
-                        <div class="slider-quick-btn" onclick="setSliderValue(5)">5</div>
-                        <div class="slider-quick-btn" onclick="setSliderValue(7)">7</div>
-                        <div class="slider-quick-btn" onclick="setSliderValue(10)">10</div>
-                    </div>
                 </div>
             </div>
 
@@ -1435,12 +1566,19 @@
 
         // Показать главную страницу
         async function showMainPage() {
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('mainPage').classList.remove('hidden');
-            document.getElementById('currentUserName').textContent = currentUser.name;
-            loadTheme();
-            await loadMyStats();
-            await loadUsers();
+            try {
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('mainPage').classList.remove('hidden');
+                document.getElementById('currentUserName').textContent = currentUser.name;
+                loadTheme();
+                
+                // Загружаем данные последовательно чтобы не слетало
+                await loadMyStats();
+                await loadUsers();
+            } catch (error) {
+                console.error('Error showing main page:', error);
+                alert('Ошибка загрузки: ' + error.message);
+            }
         }
 
         // Переключение темы
@@ -1735,67 +1873,56 @@
         // Загрузить вкладку Голосование
         async function loadVotingTab() {
             try {
+                // Получаем все посты
                 const { data: allScores, error } = await supabaseClient
                     .from('scores')
-                    .select('*');
+                    .select('*')
+                    .order('created_at', { ascending: false });
 
                 if (error) throw error;
 
-                const { data: users, error: usersError } = await supabaseClient
-                    .from('users')
-                    .select('*');
+                // Фильтруем только те, у которых есть текст или фото
+                const postsWithContent = allScores.filter(s => 
+                    (s.proof_text && s.proof_text.trim() !== '' && s.proof_text.trim() !== 'Быстрое голосование из раздела "Голосование"') || 
+                    (s.proof_file_url && s.proof_file_url.trim() !== '')
+                );
 
-                if (usersError) throw usersError;
-
-                // Подсчитываем общий рейтинг (теперь pikmi и eball могут быть больше 1)
-                const ratings = {};
-                users.forEach(user => {
-                    const userScores = allScores.filter(s => s.user_name === user.name);
-                    const pikmiCount = userScores.reduce((sum, s) => sum + (s.pikmi || 0), 0);
-                    const eballCount = userScores.reduce((sum, s) => sum + (s.eball || 0), 0);
-                    ratings[user.name] = {
-                        pikmi: pikmiCount,
-                        eball: eballCount,
-                        total: pikmiCount - eballCount,
-                        photo: user.photo_url,
-                        login: user.login
-                    };
-                });
-
-                // Сортируем по общему рейтингу
-                const sortedUsers = Object.entries(ratings)
-                    .sort((a, b) => b[1].total - a[1].total)
-                    .map(([name, data]) => ({ name, ...data }));
+                if (postsWithContent.length === 0) {
+                    document.getElementById('votingContent').innerHTML = 
+                        '<p style="text-align: center; color: #999; padding: 40px;">Пока нет постов для голосования</p>';
+                    return;
+                }
 
                 const votingHTML = `
-                    <h2 style="margin-bottom: 30px; text-align: center;">🏆 Голосование за участников</h2>
+                    <h2 style="margin-bottom: 30px; text-align: center;">🏆 Голосование за посты</h2>
+                    <p style="text-align: center; color: #666; margin-bottom: 30px;">Выберите пост и проголосуйте за него</p>
                     <div style="display: grid; gap: 20px;">
-                        ${sortedUsers.map((user, index) => {
-                            const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
-                            const avatarHTML = user.photo
-                                ? `<img src="${user.photo}" alt="${user.name}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #667eea;">`
-                                : `<div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 32px; border: 3px solid #667eea;">${user.name.charAt(0).toUpperCase()}</div>`;
-                            
-                            // Проверяем, можем ли мы голосовать за этого пользователя
-                            const canVote = user.login !== currentUser.login;
+                        ${postsWithContent.map((post, index) => {
+                            const type = (post.pikmi || 0) > 0 ? 'pikmi' : 'eball';
+                            const typeText = type === 'pikmi' ? '⭐ Pikmi Move' : '⚠️ E-Ball';
+                            const typeClass = type === 'pikmi' ? 'action-type-pikmi' : 'action-type-eball';
+                            const date = new Date(post.created_at).toLocaleString('ru-RU');
+                            const isVideo = post.proof_file_type && post.proof_file_type.startsWith('video/');
                             
                             return `
-                                <div class="user-card" style="display: flex; align-items: center; gap: 20px; padding: 25px; flex-wrap: wrap;">
-                                    <div style="font-size: 32px; font-weight: bold; min-width: 60px; text-align: center;">${medal}</div>
-                                    ${avatarHTML}
-                                    <div style="flex: 1; min-width: 200px;">
-                                        <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">${user.name}</div>
-                                        <div style="display: flex; gap: 20px; font-size: 16px; flex-wrap: wrap; margin-bottom: 15px;">
-                                            <div><span style="color: #27ae60; font-weight: bold;">⭐ ${user.pikmi}</span> Pikmi</div>
-                                            <div><span style="color: #e74c3c; font-weight: bold;">⚠️ ${user.eball}</span> E-Ball</div>
-                                            <div><span style="color: #667eea; font-weight: bold; font-size: 20px;">📊 ${user.total}</span> Рейтинг</div>
-                                        </div>
-                                        ${canVote ? `
-                                            <div style="display: flex; gap: 10px;">
-                                                <button onclick="quickVote('${user.name}', 'pikmi')" class="btn-success btn-small" style="flex: 1;">👍 +1 Pikmi</button>
-                                                <button onclick="quickVote('${user.name}', 'eball')" class="btn-danger btn-small" style="flex: 1;">👎 +1 E-Ball</button>
-                                            </div>
-                                        ` : '<div style="color: #999; font-size: 14px;">Это вы</div>'}
+                                <div class="action-item" style="cursor: pointer;" onclick="openVoteForPost('${post.id}', '${post.user_name}', '${post.proof_text.replace(/'/g, "\\'")}', '${post.proof_file_url || ''}', '${post.proof_file_type || ''}')">
+                                    <div class="action-header">
+                                        <span class="${typeClass}">${typeText}</span>
+                                        <span style="color: #999; font-size: 12px;">${date}</span>
+                                    </div>
+                                    <div style="color: #666; font-size: 14px; margin-bottom: 10px;">
+                                        <strong>${post.user_name}</strong> ← ${post.voter_name}
+                                    </div>
+                                    <div class="action-text">${post.proof_text || 'Без описания'}</div>
+                                    ${post.proof_file_url ? `
+                                        ${isVideo 
+                                            ? `<video src="${post.proof_file_url}" style="max-width: 100%; border-radius: 8px; margin-top: 10px;" muted></video>`
+                                            : `<img src="${post.proof_file_url}" class="action-photo" alt="Фото" style="max-width: 100%; border-radius: 8px; margin-top: 10px;">`
+                                        }
+                                    ` : ''}
+                                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0;">
+                                        <button onclick="event.stopPropagation(); voteForPost('${post.id}', 'pikmi')" class="btn-success btn-small" style="margin-right: 10px;">👍 Pikmi</button>
+                                        <button onclick="event.stopPropagation(); voteForPost('${post.id}', 'eball')" class="btn-danger btn-small">👎 E-Ball</button>
                                     </div>
                                 </div>
                             `;
@@ -1806,26 +1933,34 @@
                 document.getElementById('votingContent').innerHTML = votingHTML;
             } catch (error) {
                 console.error('Load voting tab error:', error);
+                document.getElementById('votingContent').innerHTML = 
+                    '<p style="text-align: center; color: #e74c3c; padding: 40px;">Ошибка загрузки: ' + error.message + '</p>';
             }
         }
 
-        // Быстрое голосование из вкладки Голосование
-        async function quickVote(userName, voteType) {
-            if (!confirm(`Поставить ${voteType === 'pikmi' ? 'Pikmi Move' : 'E-Ball'} для ${userName}?`)) {
-                return;
-            }
-
+        // Голосование за пост
+        async function voteForPost(postId, voteType) {
             try {
+                // Получаем информацию о посте
+                const { data: post, error: postError } = await supabaseClient
+                    .from('scores')
+                    .select('*')
+                    .eq('id', postId)
+                    .single();
+
+                if (postError) throw postError;
+
+                // Создаем новую запись голосования
                 const record = {
-                    user_name: userName,
+                    user_name: post.user_name,
                     voter_login: currentUser.login,
                     voter_name: currentUser.name,
                     pikmi: voteType === 'pikmi' ? 1 : 0,
                     eball: voteType === 'eball' ? 1 : 0,
-                    proof_text: `Быстрое голосование из раздела "Голосование"`,
-                    proof_file_url: null,
-                    proof_file_name: null,
-                    proof_file_type: null
+                    proof_text: `Голосование за пост: "${post.proof_text ? post.proof_text.substring(0, 50) : 'без описания'}"`,
+                    proof_file_url: post.proof_file_url,
+                    proof_file_name: post.proof_file_name,
+                    proof_file_type: post.proof_file_type
                 };
 
                 const { error: insertError } = await supabaseClient
@@ -1842,9 +1977,35 @@
                 loadMyStats();
                 loadUsers();
             } catch (error) {
-                console.error('Quick vote error:', error);
+                console.error('Vote for post error:', error);
                 alert('Ошибка: ' + error.message);
             }
+        }
+
+        // Открыть модальное окно для голосования за пост
+        function openVoteForPost(postId, userName, proofText, proofFileUrl, proofFileType) {
+            selectedUser = userName;
+            document.getElementById('voteModalTitle').textContent = `Оценить пост: ${userName}`;
+            document.getElementById('voteType').value = '';
+            document.getElementById('voteAmountSlider').value = '1';
+            document.getElementById('sliderValueDisplay').textContent = '1';
+            document.getElementById('proofText').value = proofText || '';
+            document.getElementById('proofFile').value = '';
+            document.getElementById('fileLabel').textContent = proofFileUrl ? '📎 Файл уже прикреплен' : '📎 Выберите файл';
+            document.getElementById('voteTypeInfo').classList.add('hidden');
+            document.getElementById('voteMessage').classList.add('hidden');
+            
+            // Показываем превью файла если есть
+            if (proofFileUrl) {
+                const isVideo = proofFileType && proofFileType.startsWith('video/');
+                const preview = isVideo 
+                    ? `<video src="${proofFileUrl}" style="max-width: 100%; border-radius: 8px; margin-top: 10px;" controls></video>`
+                    : `<img src="${proofFileUrl}" style="max-width: 100%; border-radius: 8px; margin-top: 10px;">`;
+                document.getElementById('voteMessage').innerHTML = preview;
+                document.getElementById('voteMessage').classList.remove('hidden');
+            }
+            
+            document.getElementById('voteModal').classList.remove('hidden');
         }
 
         // Загрузить вкладку КРИНЖ
@@ -2250,7 +2411,6 @@
             document.getElementById('fileLabel').textContent = '📎 Выберите файл';
             document.getElementById('voteTypeInfo').classList.add('hidden');
             document.getElementById('voteMessage').classList.add('hidden');
-            updateQuickButtons(1);
             document.getElementById('voteModal').classList.remove('hidden');
         }
 
@@ -2282,26 +2442,9 @@
         // Обновить значение слайдера
         function updateSliderValue(value) {
             document.getElementById('sliderValueDisplay').textContent = value;
-            updateQuickButtons(parseInt(value));
         }
 
-        // Установить значение слайдера
-        function setSliderValue(value) {
-            document.getElementById('voteAmountSlider').value = value;
-            updateSliderValue(value);
-        }
 
-        // Обновить активные кнопки быстрого выбора
-        function updateQuickButtons(activeValue) {
-            const buttons = document.querySelectorAll('.slider-quick-btn');
-            buttons.forEach(btn => {
-                if (parseInt(btn.textContent) === activeValue) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-        }
 
         // Обновить имя файла
         function updateFileName() {
@@ -2621,3 +2764,4 @@
     </script>
 </body>
 </html>
+
