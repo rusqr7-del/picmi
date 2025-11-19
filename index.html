@@ -1479,8 +1479,7 @@
         <!-- Вкладки -->
         <div class="tabs">
             <button class="tab active" onclick="switchTab('main')">🏠 Главная</button>
-            <button class="tab" onclick="switchTab('calendar')">📅 Календарь</button>
-            <button class="tab" onclick="switchTab('voting')">⭐ Голосование</button>
+            <button class="tab" onclick="switchTab('voting')">💡 Идеи</button>
             <button class="tab" onclick="switchTab('cringe')">💀 КРИНЖ</button>
             <button class="tab" onclick="switchTab('myProfile')">👤 Мой профиль</button>
         </div>
@@ -1488,19 +1487,37 @@
         <!-- Вкладка: Главная -->
         <div id="tab-main" class="tab-content active">
             <div class="stats-grid" id="myStats"></div>
+            
+            <!-- Топ рейтингов -->
+            <div style="margin-top: 30px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <h2 style="margin-bottom: 15px;">🏆 Топ рейтингов</h2>
+                <div id="topRatings" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;"></div>
+            </div>
+            
             <h2 style="margin-top: 30px;">Участники</h2>
+            <!-- Поиск и фильтрация -->
+            <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" id="searchUsers" placeholder="🔍 Поиск по имени..." 
+                       style="flex: 1; min-width: 200px; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;"
+                       oninput="filterUsers()">
+                <select id="sortUsers" onchange="filterUsers()" 
+                        style="padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; cursor: pointer;">
+                    <option value="rating">📊 По рейтингу</option>
+                    <option value="pikmi">⭐ По Pikmi</option>
+                    <option value="eball">⚠️ По E-Ball</option>
+                    <option value="name">🔤 По имени</option>
+                </select>
+            </div>
             <div id="usersList"></div>
         </div>
 
-        <!-- Вкладка: Календарь -->
-        <div id="tab-calendar" class="tab-content">
-            <div id="pikmiRatingCalendar"></div>
-            <div id="calendarContainer"></div>
-            <div id="calendarEvents"></div>
-        </div>
-
-        <!-- Вкладка: Голосование -->
+        <!-- Вкладка: Идеи -->
         <div id="tab-voting" class="tab-content">
+            <div style="margin-bottom: 20px; text-align: center;">
+                <button onclick="openNewIdeaModal()" class="btn-primary" style="padding: 12px 24px; font-size: 16px;">
+                    ➕ Добавить идею
+                </button>
+            </div>
             <div id="votingContent"></div>
         </div>
 
@@ -1591,6 +1608,27 @@
             <div id="settingsContent">
                 <!-- Контент будет загружен динамически -->
             </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для создания идеи -->
+    <div id="ideaModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="modal-close" onclick="closeIdeaModal()">&times;</span>
+            <h2>💡 Добавить идею</h2>
+            <div class="input-group">
+                <label for="ideaText">Описание идеи *</label>
+                <textarea id="ideaText" placeholder="Опишите вашу идею..." rows="5" style="resize: vertical;"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="ideaFile">Файл (опционально)</label>
+                <input type="file" id="ideaFile" accept="image/*,video/*" onchange="updateIdeaFileName()">
+                <label id="ideaFileLabel" for="ideaFile" style="display: block; margin-top: 10px; padding: 10px; border: 2px dashed #e0e0e0; border-radius: 8px; text-align: center; cursor: pointer; color: #666;">
+                    📎 Выберите файл (фото или видео)
+                </label>
+            </div>
+            <div id="ideaMessage"></div>
+            <button onclick="submitIdea()" class="btn-primary" style="width: 100%; margin-top: 15px;">Отправить идею</button>
         </div>
     </div>
 
@@ -1946,6 +1984,7 @@
                 // Загружаем данные последовательно чтобы не слетало
                 await loadMyStats();
                 await loadUsers();
+                await loadTopRatings();
                 
                 // Запускаем проверку автоочистки файлов (в фоне, не блокируя загрузку)
                 setTimeout(() => {
@@ -2006,10 +2045,7 @@
             document.getElementById(`tab-${tabName}`).classList.add('active');
             
             // Загружаем контент вкладки
-            if (tabName === 'calendar') {
-                loadCalendar();
-                loadPikmiRating();
-            } else if (tabName === 'voting') {
+            if (tabName === 'voting') {
                 loadVotingTab();
             } else if (tabName === 'cringe') {
                 loadCringeTab();
@@ -2266,69 +2302,78 @@
             }
         }
 
-        // Загрузить вкладку Голосование (оптимизировано)
+        // Загрузить вкладку Идеи
         async function loadVotingTab() {
             try {
-                let allScores;
-                
-                // Используем кеш если доступен
-                if (isCacheValid('scores') && cache.scores.data) {
-                    allScores = cache.scores.data;
-                } else {
-                    const { data, error } = await retryRequest(async () => {
-                        return await supabaseClient
-                            .from('scores')
-                            .select('id,user_name,voter_name,pikmi,eball,created_at,proof_text,proof_file_url,proof_file_type')
-                            .order('created_at', { ascending: false });
-                    });
-                    if (error) throw error;
-                    allScores = data || [];
-                    cache.scores.data = allScores;
-                    cache.scores.timestamp = Date.now();
-                }
+                // Получаем все идеи (записи где proof_text начинается с "ИДЕЯ:")
+                const { data: allIdeas, error } = await retryRequest(async () => {
+                    return await supabaseClient
+                        .from('scores')
+                        .select('id,user_name,voter_name,created_at,proof_text,proof_file_url,proof_file_type')
+                        .ilike('proof_text', 'ИДЕЯ:%')
+                        .order('created_at', { ascending: false });
+                });
 
-                // Фильтруем только те, у которых есть текст или фото
-                const postsWithContent = allScores.filter(s => 
-                    (s.proof_text && s.proof_text.trim() !== '' && s.proof_text.trim() !== 'Быстрое голосование из раздела "Голосование"') || 
-                    (s.proof_file_url && s.proof_file_url.trim() !== '')
-                );
+                if (error) throw error;
 
-                if (postsWithContent.length === 0) {
+                // Получаем голоса для каждой идеи
+                const { data: allVotes } = await supabaseClient
+                    .from('scores')
+                    .select('id,user_name,pikmi,eball')
+                    .or('proof_text.like.Голос за идею%,proof_text.like.Голос против идеи%');
+
+                // Подсчитываем голоса для каждой идеи
+                const ideasWithVotes = (allIdeas || []).map(idea => {
+                    const ideaVotes = (allVotes || []).filter(v => 
+                        v.proof_text && (v.proof_text.includes(`идею #${idea.id}`) || v.proof_text.includes(`идею #${idea.id} `))
+                    );
+                    const plusCount = ideaVotes.filter(v => v.pikmi > 0 || (v.proof_text && v.proof_text.includes('за'))).length;
+                    const minusCount = ideaVotes.filter(v => v.eball > 0 || (v.proof_text && v.proof_text.includes('против'))).length;
+                    
+                    return {
+                        ...idea,
+                        plusCount,
+                        minusCount,
+                        ideaText: idea.proof_text.replace('ИДЕЯ: ', '')
+                    };
+                });
+
+                if (ideasWithVotes.length === 0) {
                     document.getElementById('votingContent').innerHTML = 
-                        '<p style="text-align: center; color: #999; padding: 40px;">Пока нет постов для голосования</p>';
+                        '<p style="text-align: center; color: #999; padding: 40px;">Пока нет идей. Добавьте первую!</p>';
                     return;
                 }
 
-                const votingHTML = `
-                    <h2 style="margin-bottom: 30px; text-align: center;">🏆 Голосование за посты</h2>
-                    <p style="text-align: center; color: #666; margin-bottom: 30px;">Выберите пост и проголосуйте за него</p>
+                const ideasHTML = `
                     <div style="display: grid; gap: 20px;">
-                        ${postsWithContent.map((post, index) => {
-                            const type = (post.pikmi || 0) > 0 ? 'pikmi' : 'eball';
-                            const typeText = type === 'pikmi' ? '⭐ Pikmi Move' : '⚠️ E-Ball';
-                            const typeClass = type === 'pikmi' ? 'action-type-pikmi' : 'action-type-eball';
-                            const date = new Date(post.created_at).toLocaleString('ru-RU');
-                            const isVideo = post.proof_file_type && post.proof_file_type.startsWith('video/');
+                        ${ideasWithVotes.map((idea) => {
+                            const date = new Date(idea.created_at).toLocaleString('ru-RU');
+                            const isVideo = idea.proof_file_type && idea.proof_file_type.startsWith('video/');
                             
                             return `
-                                <div class="action-item" style="cursor: pointer;" onclick="openVoteForPost('${post.id}', '${post.user_name}', '${post.proof_text.replace(/'/g, "\\'")}', '${post.proof_file_url || ''}', '${post.proof_file_type || ''}')">
-                                    <div class="action-header">
-                                        <span class="${typeClass}">${typeText}</span>
-                                        <span style="color: #999; font-size: 12px;">${date}</span>
+                                <div class="action-item" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                                        <div>
+                                            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">${idea.voter_name}</div>
+                                            <div style="color: #999; font-size: 12px;">${date}</div>
+                                        </div>
                                     </div>
-                                    <div style="color: #666; font-size: 14px; margin-bottom: 10px;">
-                                        <strong>${post.user_name}</strong> ← ${post.voter_name}
-                                    </div>
-                                    <div class="action-text">${post.proof_text || 'Без описания'}</div>
-                                    ${post.proof_file_url ? `
+                                    <div class="action-text" style="margin-bottom: 15px; font-size: 15px; line-height: 1.6;">${idea.ideaText}</div>
+                                    ${idea.proof_file_url ? `
                                         ${isVideo 
-                                            ? `<video src="${post.proof_file_url}" style="max-width: 100%; border-radius: 8px; margin-top: 10px;" muted></video>`
-                                            : `<img src="${post.proof_file_url}" class="action-photo" alt="Фото" style="max-width: 100%; border-radius: 8px; margin-top: 10px;">`
+                                            ? `<video src="${idea.proof_file_url}" style="max-width: 100%; border-radius: 8px; margin-bottom: 15px;" controls></video>`
+                                            : `<img src="${idea.proof_file_url}" class="action-photo" alt="Фото" style="max-width: 100%; border-radius: 8px; margin-bottom: 15px; cursor: pointer;" onclick="window.open('${idea.proof_file_url}', '_blank')">`
                                         }
                                     ` : ''}
-                                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0;">
-                                        <button onclick="event.stopPropagation(); voteForPost('${post.id}', 'pikmi')" class="btn-success btn-small" style="margin-right: 10px;">👍 Pikmi</button>
-                                        <button onclick="event.stopPropagation(); voteForPost('${post.id}', 'eball')" class="btn-danger btn-small">👎 E-Ball</button>
+                                    <div style="display: flex; gap: 15px; align-items: center; padding-top: 15px; border-top: 1px solid #e0e0e0;">
+                                        <button onclick="voteForIdea(${idea.id}, 'plus')" class="btn-success" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                            <span style="font-size: 18px;">✓</span>
+                                            <span>${idea.plusCount}</span>
+                                        </button>
+                                        <button onclick="voteForIdea(${idea.id}, 'minus')" class="btn-danger" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                            <span style="font-size: 18px;">✗</span>
+                                            <span>${idea.minusCount}</span>
+                                        </button>
                                     </div>
                                 </div>
                             `;
@@ -2336,15 +2381,168 @@
                     </div>
                 `;
 
-                document.getElementById('votingContent').innerHTML = votingHTML;
+                document.getElementById('votingContent').innerHTML = ideasHTML;
             } catch (error) {
-                console.error('Load voting tab error:', error);
+                console.error('Load ideas error:', error);
                 document.getElementById('votingContent').innerHTML = 
                     '<p style="text-align: center; color: #e74c3c; padding: 40px;">Ошибка загрузки: ' + error.message + '</p>';
             }
         }
 
-        // Голосование за пост (оптимизировано)
+        // Открыть модальное окно для создания идеи
+        function openNewIdeaModal() {
+            document.getElementById('ideaModal').classList.remove('hidden');
+            document.getElementById('ideaText').value = '';
+            document.getElementById('ideaFile').value = '';
+            document.getElementById('ideaFileLabel').textContent = '📎 Выберите файл (фото или видео)';
+            document.getElementById('ideaMessage').innerHTML = '';
+        }
+
+        function closeIdeaModal() {
+            document.getElementById('ideaModal').classList.add('hidden');
+        }
+
+        function updateIdeaFileName() {
+            const fileInput = document.getElementById('ideaFile');
+            const label = document.getElementById('ideaFileLabel');
+            if (fileInput.files.length > 0) {
+                label.textContent = `📎 ${fileInput.files[0].name}`;
+            }
+        }
+
+        // Отправить идею
+        async function submitIdea() {
+            const ideaText = document.getElementById('ideaText').value.trim();
+            const fileInput = document.getElementById('ideaFile');
+            const messageDiv = document.getElementById('ideaMessage');
+
+            if (!ideaText) {
+                showMessage(messageDiv, 'Опишите вашу идею', 'error');
+                return;
+            }
+
+            try {
+                let fileUrl = null;
+                let fileName = null;
+                let fileType = null;
+
+                // Загрузка файла если есть
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                    fileType = file.type;
+
+                    const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                        .from('proofs')
+                        .upload(fileName, file);
+
+                    if (uploadError) {
+                        console.error('Upload error:', uploadError);
+                        throw uploadError;
+                    }
+
+                    const { data: urlData } = supabaseClient.storage
+                        .from('proofs')
+                        .getPublicUrl(fileName);
+
+                    fileUrl = urlData.publicUrl;
+                }
+
+                // Создаем запись идеи
+                const record = {
+                    user_name: currentUser.name,
+                    voter_login: currentUser.login,
+                    voter_name: currentUser.name,
+                    pikmi: 0,
+                    eball: 0,
+                    proof_text: `ИДЕЯ: ${ideaText}`,
+                    proof_file_url: fileUrl,
+                    proof_file_name: fileName,
+                    proof_file_type: fileType
+                };
+
+                const { error: insertError } = await supabaseClient
+                    .from('scores')
+                    .insert(record);
+
+                if (insertError) {
+                    console.error('Insert error:', insertError);
+                    throw insertError;
+                }
+
+                showMessage(messageDiv, '✅ Идея успешно добавлена!', 'success');
+                
+                // Очищаем кеш и перезагружаем
+                clearCache('scores');
+                
+                setTimeout(() => {
+                    closeIdeaModal();
+                    loadVotingTab();
+                }, 1500);
+
+            } catch (error) {
+                console.error('Submit idea error:', error);
+                showMessage(messageDiv, 'Ошибка: ' + error.message, 'error');
+            }
+        }
+
+        // Голосование за идею (плюс или минус)
+        async function voteForIdea(ideaId, voteType) {
+            try {
+                // Проверяем, не голосовал ли уже пользователь за эту идею
+                const { data: existingVotes } = await supabaseClient
+                    .from('scores')
+                    .select('id')
+                    .eq('voter_login', currentUser.login)
+                    .or(`proof_text.like.Голос за идею #${ideaId}%,proof_text.like.Голос против идеи #${ideaId}%`);
+
+                if (existingVotes && existingVotes.length > 0) {
+                    alert('Вы уже проголосовали за эту идею!');
+                    return;
+                }
+
+                // Получаем информацию об идее
+                const { data: idea } = await supabaseClient
+                    .from('scores')
+                    .select('proof_text')
+                    .eq('id', ideaId)
+                    .single();
+
+                if (!idea) {
+                    alert('Идея не найдена');
+                    return;
+                }
+
+                // Создаем запись голоса
+                const record = {
+                    user_name: currentUser.name,
+                    voter_login: currentUser.login,
+                    voter_name: currentUser.name,
+                    pikmi: voteType === 'plus' ? 1 : 0,
+                    eball: voteType === 'minus' ? 1 : 0,
+                    proof_text: voteType === 'plus' ? `Голос за идею #${ideaId}` : `Голос против идеи #${ideaId}`
+                };
+
+                const { error: insertError } = await supabaseClient
+                    .from('scores')
+                    .insert(record);
+
+                if (insertError) {
+                    console.error('Vote error:', insertError);
+                    throw insertError;
+                }
+
+                // Очищаем кеш и перезагружаем
+                clearCache('scores');
+                loadVotingTab();
+
+            } catch (error) {
+                console.error('Vote for idea error:', error);
+                alert('Ошибка при голосовании: ' + error.message);
+            }
+        }
+
+        // Голосование за пост (оптимизировано) - оставлено для совместимости
         async function voteForPost(postId, voteType) {
             try {
                 // Получаем информацию о посте (оптимизированный запрос)
@@ -2486,8 +2684,8 @@
                             const dayEball = dayScores.reduce((sum, s) => sum + (s.eball || 0), 0);
                             
                             return `
-                                <div class="cringe-timeline-item" style="cursor: pointer;" onclick="switchToCalendarDate('${date}')">
-                                    <div class="cringe-timeline-date">${date} (нажмите для перехода в календарь)</div>
+                                <div class="cringe-timeline-item">
+                                    <div class="cringe-timeline-date">${date}</div>
                                     <div style="display: flex; gap: 20px; margin-bottom: 15px;">
                                         <span style="color: #27ae60; font-weight: bold;">⭐ Pikmi: ${dayPikmi}</span>
                                         <span style="color: #e74c3c; font-weight: bold;">⚠️ E-Ball: ${dayEball}</span>
@@ -2818,24 +3016,6 @@
             }
         }
 
-        // Переход к дате в календаре из КРИНЖ
-        function switchToCalendarDate(dateStr) {
-            // Переключаемся на вкладку календаря
-            switchTab('calendar');
-            
-            // Парсим дату и устанавливаем календарь
-            const [day, month, year] = dateStr.split('.');
-            currentCalendarDate = new Date(year, month - 1, day);
-            
-            // Загружаем календарь и показываем события этого дня
-            setTimeout(() => {
-                loadCalendar();
-                const dateKey = `${year}-${month - 1}-${day}`;
-                setTimeout(() => {
-                    showCalendarDay(dateKey);
-                }, 500);
-            }, 100);
-        }
 
         // Загрузить мою статистику (оптимизировано с кешированием)
         async function loadMyStats() {
@@ -2921,55 +3101,162 @@
                     cache.scores.timestamp = Date.now();
                 }
 
-                const usersList = document.getElementById('usersList');
-                usersList.innerHTML = '';
-
-                users.forEach(user => {
-                    if (user.login === currentUser.login) return;
-
-                const userScores = allScores.filter(s => s.user_name === user.name);
-                const pikmiCount = userScores.reduce((sum, s) => sum + (s.pikmi || 0), 0);
-                const eballCount = userScores.reduce((sum, s) => sum + (s.eball || 0), 0);
+                // Сохраняем данные для фильтрации
+                window.allUsersData = users.map(user => {
+                    if (user.login === currentUser.login) return null;
+                    const userScores = allScores.filter(s => s.user_name === user.name);
+                    const pikmiCount = userScores.reduce((sum, s) => sum + (s.pikmi || 0), 0);
+                    const eballCount = userScores.reduce((sum, s) => sum + (s.eball || 0), 0);
                     const totalRating = pikmiCount - eballCount;
+                    return {
+                        ...user,
+                        pikmiCount,
+                        eballCount,
+                        totalRating
+                    };
+                }).filter(u => u !== null);
 
-                    const card = document.createElement('div');
-                    card.className = 'user-card';
-                    
-                    // Аватарка: если есть photo_url - показываем фото, если нет - первую букву
-                    const avatarHTML = user.photo_url 
-                        ? `<img src="${user.photo_url}" alt="${user.name}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 3px solid #667eea; cursor: pointer;" onclick="openProfileModal('${user.name}', '${user.photo_url || ''}')">` 
-                        : `<div class="user-avatar" style="cursor: pointer;" onclick="openProfileModal('${user.name}', '')">${user.name.charAt(0).toUpperCase()}</div>`;
-                    
-                    card.innerHTML = `
-                        <div class="user-info" style="cursor: pointer;" onclick="openProfileModal('${user.name}', '${user.photo_url || ''}')">
-                            ${avatarHTML}
-                            <div class="user-details">
-                                <div class="user-name">${user.name}</div>
-                                <div class="rating-display">
-                                    <div class="rating-item">
-                                        <span>⭐</span>
-                                        <span class="pikmi-count">${pikmiCount}</span>
-                                    </div>
-                                    <div class="rating-item">
-                                        <span>⚠️</span>
-                                        <span class="eball-count">${eballCount}</span>
-                                    </div>
-                                    <div class="rating-item">
-                                        <span>📊</span>
-                                        <span class="total-rating">${totalRating}</span>
-                                    </div>
+                renderUsersList(window.allUsersData);
+            } catch (error) {
+                console.error('Load users error:', error);
+            }
+        }
+
+        // Рендеринг списка пользователей с фильтрацией
+        function renderUsersList(usersData) {
+            const usersList = document.getElementById('usersList');
+            if (!usersList) return;
+            
+            usersList.innerHTML = '';
+
+            usersData.forEach(user => {
+
+                const card = document.createElement('div');
+                card.className = 'user-card';
+                
+                // Аватарка: если есть photo_url - показываем фото, если нет - первую букву
+                const avatarHTML = user.photo_url 
+                    ? `<img src="${user.photo_url}" alt="${user.name}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 3px solid #667eea; cursor: pointer;" onclick="openProfileModal('${user.name}', '${user.photo_url || ''}')">` 
+                    : `<div class="user-avatar" style="cursor: pointer;" onclick="openProfileModal('${user.name}', '')">${user.name.charAt(0).toUpperCase()}</div>`;
+                
+                card.innerHTML = `
+                    <div class="user-info" style="cursor: pointer;" onclick="openProfileModal('${user.name}', '${user.photo_url || ''}')">
+                        ${avatarHTML}
+                        <div class="user-details">
+                            <div class="user-name">${user.name}</div>
+                            <div class="rating-display">
+                                <div class="rating-item">
+                                    <span>⭐</span>
+                                    <span class="pikmi-count">${user.pikmiCount}</span>
+                                </div>
+                                <div class="rating-item">
+                                    <span>⚠️</span>
+                                    <span class="eball-count">${user.eballCount}</span>
+                                </div>
+                                <div class="rating-item">
+                                    <span>📊</span>
+                                    <span class="total-rating">${user.totalRating}</span>
                                 </div>
                             </div>
                         </div>
-                        <div style="display: flex; gap: 10px;">
-                            <button onclick="event.stopPropagation(); openVoteModal('${user.name}')" class="btn-success" style="flex: 1;">Оценить</button>
-                            <button onclick="event.stopPropagation(); openActionsModal('${user.name}')" class="btn-secondary" style="flex: 1;">История</button>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="event.stopPropagation(); openVoteModal('${user.name}')" class="btn-success" style="flex: 1;">Оценить</button>
+                        <button onclick="event.stopPropagation(); openActionsModal('${user.name}')" class="btn-secondary" style="flex: 1;">История</button>
+                    </div>
+                `;
+                usersList.appendChild(card);
+            });
+        }
+
+        // Фильтрация и сортировка пользователей
+        function filterUsers() {
+            if (!window.allUsersData) return;
+            
+            const searchInput = document.getElementById('searchUsers');
+            const sortSelect = document.getElementById('sortUsers');
+            const searchTerm = (searchInput?.value || '').toLowerCase().trim();
+            const sortBy = sortSelect?.value || 'rating';
+            
+            let filtered = window.allUsersData.filter(user => {
+                if (!searchTerm) return true;
+                return user.name.toLowerCase().includes(searchTerm);
+            });
+            
+            // Сортировка
+            filtered.sort((a, b) => {
+                switch(sortBy) {
+                    case 'rating':
+                        return b.totalRating - a.totalRating;
+                    case 'pikmi':
+                        return b.pikmiCount - a.pikmiCount;
+                    case 'eball':
+                        return b.eballCount - a.eballCount;
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    default:
+                        return 0;
+                }
+            });
+            
+            renderUsersList(filtered);
+        }
+
+        // Загрузить топ рейтингов
+        async function loadTopRatings() {
+            try {
+                const container = document.getElementById('topRatings');
+                if (!container) return;
+
+                // Используем уже загруженные данные если есть
+                let usersData = window.allUsersData;
+                if (!usersData) {
+                    // Если данных нет, загружаем заново
+                    const { data: users } = await supabaseClient.from('users').select('id,name,login,photo_url');
+                    const { data: allScores } = await supabaseClient.from('scores').select('user_name,pikmi,eball');
+                    
+                    usersData = users.map(user => {
+                        const userScores = allScores.filter(s => s.user_name === user.name);
+                        const pikmiCount = userScores.reduce((sum, s) => sum + (s.pikmi || 0), 0);
+                        const eballCount = userScores.reduce((sum, s) => sum + (s.eball || 0), 0);
+                        return {
+                            ...user,
+                            pikmiCount,
+                            eballCount,
+                            totalRating: pikmiCount - eballCount
+                        };
+                    });
+                }
+
+                // Сортируем по рейтингу и берем топ-3
+                const topUsers = [...usersData]
+                    .sort((a, b) => b.totalRating - a.totalRating)
+                    .slice(0, 3);
+
+                if (topUsers.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #999;">Нет данных</p>';
+                    return;
+                }
+
+                const medals = ['🥇', '🥈', '🥉'];
+                const topHTML = topUsers.map((user, index) => {
+                    const medal = medals[index] || '🏅';
+                    return `
+                        <div style="background: linear-gradient(135deg, ${index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : '#CD7F32'} 0%, ${index === 0 ? '#FFA500' : index === 1 ? '#A8A8A8' : '#B8860B'} 100%); 
+                             padding: 15px; border-radius: 12px; text-align: center; color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                            <div style="font-size: 32px; margin-bottom: 10px;">${medal}</div>
+                            <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">${user.name}</div>
+                            <div style="font-size: 24px; font-weight: bold; margin-bottom: 5px;">${user.totalRating}</div>
+                            <div style="font-size: 12px; opacity: 0.9;">
+                                ⭐ ${user.pikmiCount} | ⚠️ ${user.eballCount}
+                            </div>
                         </div>
                     `;
-                    usersList.appendChild(card);
-                });
+                }).join('');
+
+                container.innerHTML = topHTML;
             } catch (error) {
-                console.error('Load users error:', error);
+                console.error('Load top ratings error:', error);
             }
         }
 
@@ -3106,11 +3393,7 @@
                     closeVoteModal();
                     loadMyStats();
                     loadUsers();
-                    // Обновляем рейтинг если открыта вкладка календаря
-                    if (document.getElementById('tab-calendar').classList.contains('active')) {
-                        loadPikmiRating();
-                    }
-                    // Обновляем голосование если открыта вкладка
+                    // Обновляем идеи если открыта вкладка
                     if (document.getElementById('tab-voting').classList.contains('active')) {
                         loadVotingTab();
                     }
@@ -3344,6 +3627,10 @@
 
         document.getElementById('settingsModal').addEventListener('click', (e) => {
             if (e.target === document.getElementById('settingsModal')) closeSettings();
+        });
+
+        document.getElementById('ideaModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('ideaModal')) closeIdeaModal();
         });
     </script>
 </body>
