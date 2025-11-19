@@ -15,7 +15,6 @@
             --danger: #ef4444;
             --bg-glass: rgba(255, 255, 255, 0.85);
             --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -43,7 +42,7 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             padding: 40px; border-radius: 30px;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
             max-width: 400px; margin: 10vh auto; text-align: center;
             animation: floatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -84,7 +83,6 @@
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white; box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3); transform: scale(1.02);
         }
-
         .tab-content { display: none; animation: fadeIn 0.4s ease; }
         .tab-content.active { display: block; }
 
@@ -105,11 +103,11 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 24px; font-weight: bold; color: #fff;
             object-fit: cover; border: 2px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); flex-shrink: 0;
         }
         .avatar-large { width: 100px; height: 100px; font-size: 40px; border-radius: 30px; margin: 0 auto 15px; }
 
+        /* Badge */
         .stats-badge {
             display: inline-flex; align-items: center; gap: 4px;
             padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; margin-right: 5px;
@@ -117,7 +115,7 @@
         .badge-pikmi { background: #d1fae5; color: var(--success); }
         .badge-eball { background: #fee2e2; color: var(--danger); }
 
-        /* Кнопки и инпуты */
+        /* Кнопки/Инпуты */
         .btn {
             padding: 12px 20px; border: none; border-radius: 16px;
             font-weight: 600; cursor: pointer; transition: 0.2s;
@@ -127,6 +125,8 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white; box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3); width: 100%;
         }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: scale(0.95); }
+        
         input, select, textarea {
             width: 100%; padding: 15px; border: 2px solid #eef2ff;
             border-radius: 16px; background: #f8fafc; font-size: 15px;
@@ -134,124 +134,60 @@
         }
         input:focus, textarea:focus { outline: none; border-color: var(--primary); background: #fff; }
 
-        /* СЛАЙДЕР (КРАСИВЫЙ КАК ПРОСИЛИ) */
-        .slider-container {
-            padding: 20px 0;
-            margin: 10px 0 20px;
-        }
-        
-        .slider-labels {
-            display: flex; justify-content: space-between; color: #64748b; font-size: 13px; font-weight: 600; margin-bottom: 10px;
-        }
-
+        /* СЛАЙДЕР */
+        .slider-container { padding: 20px 0; margin: 10px 0 20px; }
+        .slider-labels { display: flex; justify-content: space-between; color: #64748b; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
         .slider-value-display {
             text-align: center; font-size: 36px; font-weight: 900; 
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
         }
-
         input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 12px;
-            border-radius: 10px;
-            background: linear-gradient(90deg, #e2e8f0 0%, #a5b4fc 100%);
-            outline: none;
-            padding: 0;
-            margin: 0;
-            border: none;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            -webkit-appearance: none; width: 100%; height: 12px; border-radius: 10px;
+            background: linear-gradient(90deg, #e2e8f0 0%, #a5b4fc 100%); outline: none; padding: 0; margin: 0; border: none;
         }
-
         input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            -webkit-appearance: none; appearance: none; width: 32px; height: 32px; border-radius: 50%;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
-            border: 3px solid white;
-            transition: transform 0.2s;
+            cursor: pointer; box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4); border: 3px solid white; transition: transform 0.2s;
         }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
-        input[type=range]::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-        }
-
-        /* ЧАТ СТИЛИ */
+        /* ЧАТ (FIXED) */
         .chat-container {
-            height: 70vh;
-            display: flex;
-            flex-direction: column;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: var(--shadow-sm);
+            height: 70vh; display: flex; flex-direction: column;
+            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px);
+            border-radius: 24px; overflow: hidden; border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: var(--shadow-sm); position: relative;
         }
-
         .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px;
+            display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth;
         }
-
         .chat-input-area {
-            padding: 15px;
-            background: #fff;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 10px;
-            align-items: center;
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 15px; background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px); border-top: 1px solid #eee;
+            display: flex; gap: 10px; align-items: center;
         }
-
         .message {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            font-size: 14px;
-            line-height: 1.4;
-            position: relative;
-            word-wrap: break-word;
-            animation: fadeIn 0.3s ease;
+            max-width: 80%; padding: 10px 16px; border-radius: 18px;
+            font-size: 14px; line-height: 1.4; word-wrap: break-word;
+            animation: slideInChat 0.3s ease;
         }
-
+        @keyframes slideInChat { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .message.mine {
-            align-self: flex-end;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            align-self: flex-end; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
         }
-
         .message.others {
-            align-self: flex-start;
-            background: white;
-            color: #333;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            align-self: flex-start; background: white; color: #333;
+            border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-
-        .msg-sender {
-            font-size: 10px;
-            margin-bottom: 4px;
-            opacity: 0.8;
-            font-weight: 700;
-        }
-
-        .msg-time {
-            font-size: 9px;
-            margin-top: 4px;
-            text-align: right;
-            opacity: 0.7;
-        }
+        .msg-sender { font-size: 10px; margin-bottom: 2px; opacity: 0.8; font-weight: 700; }
+        .msg-time { font-size: 9px; margin-top: 2px; text-align: right; opacity: 0.7; }
 
         /* Модалки */
         .modal {
@@ -262,10 +198,8 @@
         }
         .modal.visible { opacity: 1; pointer-events: auto; }
         .modal-content {
-            background: #fff; width: 100%; max-width: 500px;
-            border-radius: 30px; padding: 30px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            transform: translateY(20px); transition: 0.3s;
+            background: #fff; width: 100%; max-width: 500px; border-radius: 30px; padding: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); transform: translateY(20px); transition: 0.3s;
             max-height: 85vh; overflow-y: auto;
         }
         .modal.visible .modal-content { transform: translateY(0); }
@@ -298,16 +232,10 @@
 
         /* ДАТА В ИСТОРИИ */
         .date-header {
-            margin: 25px 0 10px;
-            color: #1e293b;
-            font-weight: 800;
-            font-size: 18px;
-            text-shadow: 0 2px 10px rgba(255,255,255,0.8);
-            padding: 5px 10px;
-            background: rgba(255,255,255,0.3);
-            backdrop-filter: blur(4px);
-            border-radius: 10px;
-            display: inline-block;
+            margin: 25px 0 10px; color: #1e293b; font-weight: 800; font-size: 18px;
+            text-shadow: 0 2px 10px rgba(255,255,255,0.8); padding: 5px 10px;
+            background: rgba(255,255,255,0.3); backdrop-filter: blur(4px);
+            border-radius: 10px; display: inline-block;
         }
 
         /* Темная тема */
@@ -333,6 +261,8 @@
     </style>
 </head>
 <body>
+
+    <audio id="msgSound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3" preload="auto"></audio>
 
     <div id="loginPage" class="container">
         <div class="auth-card">
@@ -374,7 +304,6 @@
 
         <div id="tab-main" class="tab-content active">
             <div id="myStats" class="stats-grid"></div>
-            
             <div style="background: rgba(255,255,255,0.5); border-radius: 24px; padding: 15px; margin-top: 20px; backdrop-filter: blur(10px);">
                 <h3 style="margin-bottom: 15px; padding-left: 5px;">Участники</h3>
                 <div style="display: flex; gap: 10px; margin-bottom: 15px;">
@@ -387,19 +316,17 @@
         <div id="tab-chat" class="tab-content">
             <div class="chat-container">
                 <div class="chat-messages" id="chatMessages">
-                    <div style="text-align: center; color: #94a3b8; margin-top: 20px;">Загрузка сообщений...</div>
+                    <div style="text-align: center; color: #94a3b8; margin-top: 20px;">Загрузка...</div>
                 </div>
                 <div class="chat-input-area">
-                    <input type="text" id="chatInput" placeholder="Написать сообщение..." style="margin: 0; border-radius: 50px;" onkeypress="if(event.key === 'Enter') sendMessage()">
-                    <button onclick="sendMessage()" class="btn btn-primary" style="width: auto; border-radius: 50%; padding: 12px; aspect-ratio: 1;">➤</button>
+                    <input type="text" id="chatInput" placeholder="Написать..." style="margin: 0; border-radius: 50px;" onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button id="sendBtn" onclick="sendMessage()" class="btn btn-primary" style="width: auto; border-radius: 50%; padding: 12px; aspect-ratio: 1;">➤</button>
                 </div>
             </div>
         </div>
 
         <div id="tab-voting" class="tab-content">
-            <button onclick="openNewIdeaModal()" class="btn btn-primary" style="margin-bottom: 20px; border-radius: 50px;">
-                ✨ Предложить новую идею
-            </button>
+            <button onclick="openNewIdeaModal()" class="btn btn-primary" style="margin-bottom: 20px; border-radius: 50px;">✨ Предложить новую идею</button>
             <div id="votingContent"></div>
         </div>
 
@@ -424,16 +351,11 @@
                 <option value="eball">⚠️ E-Ball (Осуждаю)</option>
             </select>
             <div id="voteTypeInfo" class="hidden" style="padding: 10px; border-radius: 12px; margin-bottom: 15px; font-size: 13px; font-weight: 600;"></div>
-            
             <div class="slider-container">
                 <div class="slider-value-display" id="sliderValueDisplay">1</div>
-                <div class="slider-labels">
-                    <span>Слабо (1)</span>
-                    <span>Жестко (10)</span>
-                </div>
+                <div class="slider-labels"><span>Слабо (1)</span><span>Жестко (10)</span></div>
                 <input type="range" id="voteAmountSlider" min="1" max="10" value="1" oninput="document.getElementById('sliderValueDisplay').textContent = this.value">
             </div>
-
             <textarea id="proofText" rows="3" placeholder="Комментарий (обязательно)"></textarea>
             <div style="margin-bottom: 20px;">
                 <label for="proofFile" class="btn" style="background: #f1f5f9; color: #475569; width: 100%; cursor: pointer; justify-content: flex-start;">
@@ -511,23 +433,11 @@
 
         let currentUser = null;
         let selectedUser = null;
-        let chatInterval = null;
+        let chatChannel = null;
+        let chatPolling = null;
 
-        const cache = {
-            users: { data: null, timestamp: 0, ttl: 30000 },
-            scores: { data: null, timestamp: 0, ttl: 30000 },
-            myStats: { data: null, timestamp: 0, ttl: 30000 }
-        };
-        const isCacheValid = (k) => cache[k].data && (Date.now() - cache[k].timestamp < cache[k].ttl);
-        const clearCache = () => Object.keys(cache).forEach(k => cache[k].data = null);
-
-        function debounce(func, wait) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
-        }
+        const cache = { users: { data: null }, scores: { data: null }, myStats: { data: null } };
+        const clearCache = () => { cache.users.data=null; cache.scores.data=null; cache.myStats.data=null; };
 
         window.addEventListener('DOMContentLoaded', () => {
             if(localStorage.getItem('savedLogin')) {
@@ -539,48 +449,16 @@
                 currentUser = JSON.parse(savedUser);
                 showMainPage();
             }
-            if(localStorage.getItem('theme') === 'dark') {
-                document.body.classList.add('dark-theme');
-            }
+            if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-theme');
             keepAlivePing();
             autoCleanup();
         });
-
-        // --- MAINTAINANCE ---
-        async function keepAlivePing() {
-            const lastPing = localStorage.getItem('lastKeepAlive');
-            const fiveDays = 5 * 24 * 60 * 60 * 1000;
-            const now = Date.now();
-            if(!lastPing || (now - lastPing > fiveDays)) {
-                try { await supabaseClient.from('users').select('id').limit(1); localStorage.setItem('lastKeepAlive', now); } catch(e){}
-            }
-        }
-
-        async function autoCleanup() {
-            const lastCleanup = localStorage.getItem('lastCleanup');
-            const oneDay = 24 * 60 * 60 * 1000;
-            const now = Date.now();
-            if(!lastCleanup || (now - lastCleanup > oneDay)) {
-                try {
-                    const threeDaysAgo = new Date(); threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-                    const { data: oldFiles } = await supabaseClient.from('scores').select('id, proof_file_name').not('proof_file_name', 'is', null).lt('created_at', threeDaysAgo.toISOString());
-                    if(oldFiles && oldFiles.length > 0) {
-                        for(let item of oldFiles) {
-                            await supabaseClient.storage.from('proofs').remove([item.proof_file_name]);
-                            await supabaseClient.from('scores').update({ proof_file_url: null, proof_file_name: null, proof_text: '[Файл удален] ' + (item.proof_text || '') }).eq('id', item.id);
-                        }
-                    }
-                    localStorage.setItem('lastCleanup', now);
-                } catch(e){}
-            }
-        }
 
         // --- AUTH ---
         async function login() {
             const login = document.getElementById('loginInput').value.trim();
             const password = document.getElementById('passwordInput').value.trim();
-            const err = document.getElementById('loginError');
-            if(!login || !password) return showMsg(err, 'Заполните поля', 'error');
+            if(!login || !password) return showMsg(document.getElementById('loginError'), 'Заполните поля', 'error');
 
             try {
                 const { data, error } = await supabaseClient.rpc('check_login', { p_login: login, p_password: password });
@@ -590,8 +468,8 @@
                     if(document.getElementById('rememberMe').checked) localStorage.setItem('savedLogin', login);
                     localStorage.setItem('currentUser', JSON.stringify(currentUser));
                     showMainPage();
-                } else showMsg(err, 'Неверные данные', 'error');
-            } catch(e) { console.error(e); showMsg(err, 'Ошибка сети', 'error'); }
+                } else showMsg(document.getElementById('loginError'), 'Неверные данные', 'error');
+            } catch(e) { showMsg(document.getElementById('loginError'), 'Ошибка сети', 'error'); }
         }
 
         function showMsg(el, txt, type) {
@@ -607,473 +485,286 @@
             await Promise.all([loadMyStats(), loadUsers()]);
         }
 
-        function logout() {
-            localStorage.removeItem('currentUser');
-            location.reload();
-        }
+        function logout() { localStorage.removeItem('currentUser'); location.reload(); }
 
         // --- TABS ---
-        const debouncedSwitch = debounce((name) => {
+        function switchTab(name) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             const names = ['main', 'chat', 'voting', 'cringe', 'myProfile'];
-            const idx = names.indexOf(name);
-            if(idx !== -1) document.querySelectorAll('.tab')[idx].classList.add('active');
+            if(names.indexOf(name) !== -1) document.querySelectorAll('.tab')[names.indexOf(name)].classList.add('active');
             const content = document.getElementById(`tab-${name}`);
             if(content) {
                 content.classList.add('active');
                 window.scrollTo({top: 0, behavior: 'smooth'});
             }
-            
-            // Logic per tab
-            if(chatInterval) clearInterval(chatInterval); // stop chat polling if leaving tab
-            
+
+            // Chat Logic
+            if (name === 'chat') {
+                initChat();
+            } else {
+                if(chatChannel) { supabaseClient.removeChannel(chatChannel); chatChannel = null; }
+                if(chatPolling) { clearInterval(chatPolling); chatPolling = null; }
+            }
+
             if(name === 'voting') loadVotingTab();
-            else if(name === 'cringe') loadCringeTab();
-            else if(name === 'myProfile') loadMyProfile();
-            else if(name === 'chat') {
-                loadChatMessages();
-                chatInterval = setInterval(loadChatMessages, 3000); // poll every 3s
-            }
-        }, 150);
+            if(name === 'cringe') loadCringeTab();
+            if(name === 'myProfile') loadMyProfile();
+        }
 
-        function switchTab(name) { debouncedSwitch(name); }
+        // --- CHAT (FIXED & REALTIME) ---
+        function initChat() {
+            loadChatMessages();
+            // Subscribe to Realtime Updates
+            chatChannel = supabaseClient.channel('chat_room')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'scores', filter: 'user_name=eq.CHAT' }, payload => {
+                    loadChatMessages(true); // Play sound
+                })
+                .subscribe();
+            
+            // Backup Polling (every 3s) just in case
+            chatPolling = setInterval(() => loadChatMessages(false), 3000);
+        }
 
-        // --- DATA LOADING ---
-        async function loadMyStats() {
+        async function loadChatMessages(playSound = false) {
             try {
-                let myActions;
-                if(isCacheValid('myStats')) myActions = cache.myStats.data;
-                else {
-                    // Filter out chat messages (proof_file_type != 'chat_msg')
-                    const { data } = await supabaseClient.from('scores').select('pikmi,eball,proof_file_type').eq('user_name', currentUser.name);
-                    myActions = (data || []).filter(i => i.proof_file_type !== 'chat_msg');
-                    cache.myStats.data = myActions; cache.myStats.timestamp = Date.now();
-                }
-                const pikmi = myActions.reduce((s, a) => s + (a.pikmi||0), 0);
-                const eball = myActions.reduce((s, a) => s + (a.eball||0), 0);
-                document.getElementById('myStats').innerHTML = `
-                    <div class="stat-box"><div class="stat-num" style="color:var(--success)">${pikmi}</div><div class="stat-label">Pikmi</div></div>
-                    <div class="stat-box"><div class="stat-num" style="color:var(--danger)">${eball}</div><div class="stat-label">E-Ball</div></div>
-                    <div class="stat-box"><div class="stat-num" style="color:var(--primary)">${pikmi - eball}</div><div class="stat-label">Рейтинг</div></div>
-                `;
-            } catch(e) { console.error(e); }
-        }
-
-        async function loadUsers() {
-            try {
-                const { data: uData } = await supabaseClient.from('users').select('id,name,login,photo_url');
-                let users = uData || [];
-                let scores;
-                if(isCacheValid('scores')) scores = cache.scores.data;
-                else {
-                    const { data } = await supabaseClient.from('scores').select('user_name,pikmi,eball,proof_file_type');
-                    scores = data || [];
-                    cache.scores.data = scores; cache.scores.timestamp = Date.now();
-                }
-                // Filter out chat messages from scoring
-                const validScores = scores.filter(s => s.proof_file_type !== 'chat_msg');
-
-                window.allUsersData = users.map(u => {
-                    if(u.login === currentUser.login) return null;
-                    const us = validScores.filter(s => s.user_name === u.name);
-                    const p = us.reduce((a,b)=>a+(b.pikmi||0),0);
-                    const e = us.reduce((a,b)=>a+(b.eball||0),0);
-                    return { ...u, pikmiCount: p, eballCount: e, totalRating: p - e };
-                }).filter(u => u);
-                renderUsersList(window.allUsersData);
-            } catch(e) { console.error(e); }
-        }
-
-        function renderAvatar(u, size = 'normal') {
-            const style = size === 'large' ? 'avatar-large' : 'avatar';
-            if (u.photo_url) {
-                return `<img src="${u.photo_url}" class="${style}" onerror="this.onerror=null; this.src=''; this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                        <div class="${style}" style="display:none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">${u.name[0]}</div>`;
-            }
-            return `<div class="${style}" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">${u.name[0]}</div>`;
-        }
-
-        function renderUsersList(data) {
-            const list = document.getElementById('usersList');
-            list.innerHTML = '';
-            data.forEach(u => {
-                const div = document.createElement('div');
-                div.className = 'card';
-                div.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; cursor:pointer;" onclick="openUserProfile('${u.name}')">
-                        <div style="display:flex; gap:15px; align-items:center;">
-                            ${renderAvatar(u)}
-                            <div>
-                                <div style="font-weight:800; font-size:16px; margin-bottom:4px;">${u.name}</div>
-                                <div>
-                                    <span class="stats-badge badge-pikmi">⭐ ${u.pikmiCount}</span>
-                                    <span class="stats-badge badge-eball">⚠️ ${u.eballCount}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="font-size:24px; font-weight:900; color:var(--primary);">${u.totalRating}</div>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        <button onclick="openVoteModal('${u.name}')" class="btn btn-primary" style="flex:2;">Оценить</button>
-                    </div>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        function filterUsers() {
-            const search = document.getElementById('searchUsers').value.toLowerCase();
-            if(!window.allUsersData) return;
-            let filtered = window.allUsersData.filter(u => u.name.toLowerCase().includes(search));
-            filtered.sort((a,b) => b.totalRating - a.totalRating);
-            renderUsersList(filtered);
-        }
-
-        async function loadCringeTab() {
-            try {
-                const { data: scores, error } = await supabaseClient.from('scores').select('*').neq('proof_file_type', 'chat_msg').order('created_at', {ascending:false});
-                if(error) throw error;
-                const byDate = {};
-                scores.forEach(s => {
-                    const d = new Date(s.created_at).toLocaleDateString('ru-RU');
-                    if(!byDate[d]) byDate[d] = [];
-                    byDate[d].push(s);
-                });
-                
-                const total = scores.length;
-                const p = scores.reduce((s,i)=>s+(i.pikmi||0),0);
-                const e = scores.reduce((s,i)=>s+(i.eball||0),0);
-
-                let html = `
-                    <div class="stats-grid">
-                         <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-label">Всего</div></div>
-                         <div class="stat-box"><div class="stat-num" style="color:var(--success)">${p}</div><div class="stat-label">Pikmi</div></div>
-                         <div class="stat-box"><div class="stat-num" style="color:var(--danger)">${e}</div><div class="stat-label">E-Ball</div></div>
-                    </div>
-                `;
-
-                Object.keys(byDate).forEach(date => {
-                    html += `<div class="date-header">📅 ${date}</div>`;
-                    byDate[date].forEach(s => {
-                        const isPikmi = (s.pikmi||0) > 0;
-                        html += `
-                            <div class="card" style="padding:15px; margin-bottom:10px; display:flex; align-items:flex-start; gap:10px;">
-                                <div style="font-size:24px;">${isPikmi ? '⭐' : '⚠️'}</div>
-                                <div style="flex:1;">
-                                    <div style="font-weight:bold; font-size:14px;">${s.user_name} <span style="font-weight:normal; color:#94a3b8;">от ${s.voter_name}</span></div>
-                                    <div style="color:#475569; font-size:14px; margin-top:4px;">${s.proof_text}</div>
-                                    ${s.proof_file_url ? `<a href="${s.proof_file_url}" target="_blank" style="display:block; margin-top:5px; font-size:12px; color:var(--primary);">📷 Посмотреть файл</a>` : ''}
-                                </div>
-                                <div style="font-weight:bold; color:${isPikmi ? 'var(--success)' : 'var(--danger)'}">${isPikmi ? s.pikmi : s.eball}</div>
-                            </div>
-                        `;
-                    });
-                });
-                document.getElementById('cringeContent').innerHTML = html;
-            } catch(e) { console.error(e); }
-        }
-
-        // --- CHAT SYSTEM (NEW) ---
-        async function loadChatMessages() {
-            try {
-                // Using 'scores' table as chat backend with special flag
+                // Fetch 50 NEWEST messages
                 const { data: msgs, error } = await supabaseClient
                     .from('scores')
                     .select('*')
-                    .eq('proof_file_type', 'chat_msg')
-                    .order('created_at', { ascending: true })
+                    .eq('user_name', 'CHAT')
+                    .order('created_at', { ascending: false })
                     .limit(50);
                 
                 if(error) throw error;
                 
                 const container = document.getElementById('chatMessages');
-                if(msgs.length === 0) {
-                    container.innerHTML = '<div style="text-align:center;color:#94a3b8;margin-top:20px;">Чат пуст. Напишите первое сообщение!</div>';
+                if(!msgs || msgs.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;color:#94a3b8;margin-top:20px;">Чат пуст</div>';
                     return;
                 }
 
-                const html = msgs.map(m => {
-                    const isMine = m.user_name === currentUser.name;
+                // Reverse to show correctly (Oldest at top, Newest at bottom)
+                const sortedMsgs = msgs.reverse();
+                const html = sortedMsgs.map(m => {
+                    const isMine = m.voter_name === currentUser.name;
                     const time = new Date(m.created_at).toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
                     return `
                         <div class="message ${isMine ? 'mine' : 'others'}">
-                            <div class="msg-sender">${m.user_name}</div>
+                            <div class="msg-sender">${m.voter_name}</div>
                             <div>${m.proof_text}</div>
                             <div class="msg-time">${time}</div>
                         </div>
                     `;
                 }).join('');
 
-                // Only update if content changed to avoid scroll jumping
+                // Only update if changed to prevent jitter
                 if(container.innerHTML !== html) {
                     container.innerHTML = html;
                     container.scrollTop = container.scrollHeight;
+                    if(playSound) {
+                        try { document.getElementById('msgSound').play(); } catch(e){}
+                    }
                 }
             } catch(e) { console.error("Chat error", e); }
         }
 
         async function sendMessage() {
             const input = document.getElementById('chatInput');
+            const btn = document.getElementById('sendBtn');
             const text = input.value.trim();
             if(!text) return;
             
-            input.value = ''; // Clear immediately
-            
+            input.value = ''; 
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+
             try {
                 await supabaseClient.from('scores').insert({
-                    user_name: currentUser.name,
-                    voter_name: 'CHAT_SYSTEM', // System flag
+                    user_name: 'CHAT', // Special user for chat room
+                    voter_name: currentUser.name,
+                    voter_login: currentUser.login,
                     proof_text: text,
-                    proof_file_type: 'chat_msg', // This marks it as a chat message
                     pikmi: 0, eball: 0
                 });
-                loadChatMessages(); // Refresh immediately
-            } catch(e) { alert('Ошибка отправки: ' + e.message); }
-        }
-
-        // --- VOTING & PROFILE ---
-        async function loadVotingTab() {
-             try {
-                const { data: ideas } = await supabaseClient.from('scores').select('*').ilike('proof_text', 'ИДЕЯ:%').order('created_at', {ascending:false});
-                const { data: votes } = await supabaseClient.from('scores').select('proof_text').or('proof_text.like.Голос за идею%,proof_text.like.Голос против идеи%');
-                const container = document.getElementById('votingContent');
-                if(!ideas?.length) { container.innerHTML = '<div style="text-align:center; color:#666;">Пока нет идей</div>'; return; }
-                container.innerHTML = ideas.map(i => {
-                    const text = i.proof_text.replace('ИДЕЯ: ', '');
-                    const v = votes.filter(x => x.proof_text.includes(`#${i.id}`));
-                    const y = v.filter(x => x.proof_text.includes('за')).length;
-                    const n = v.filter(x => x.proof_text.includes('против')).length;
-                    return `
-                        <div class="card">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                                <span style="font-weight:bold; color:var(--primary);">${i.voter_name}</span>
-                                <span style="color:#94a3b8; font-size:12px;">${new Date(i.created_at).toLocaleDateString()}</span>
-                            </div>
-                            <div style="font-size:15px; line-height:1.5; margin-bottom:15px;">${text}</div>
-                            ${i.proof_file_url ? `<img src="${i.proof_file_url}" style="width:100%; border-radius:12px; margin-bottom:15px; max-height:200px; object-fit:cover;">` : ''}
-                            <div style="display:flex; gap:10px;">
-                                <button class="btn" style="flex:1; background:#ecfdf5; color:var(--success);" onclick="voteForIdea(${i.id}, 'plus')">👍 ${y}</button>
-                                <button class="btn" style="flex:1; background:#fef2f2; color:var(--danger);" onclick="voteForIdea(${i.id}, 'minus')">👎 ${n}</button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-             } catch(e) { console.error(e); }
-        }
-
-        async function voteForIdea(ideaId, type) {
-            try {
-                const voteText = type === 'plus' ? `Голос за идею #${ideaId}` : `Голос против идеи #${ideaId}`;
-                await supabaseClient.from('scores').insert({
-                    user_name: 'IDEA_VOTE',
-                    voter_login: currentUser.login,
-                    voter_name: currentUser.name,
-                    proof_text: voteText
-                });
-                loadVotingTab();
-            } catch(e) { alert('Ошибка: ' + e.message); }
-        }
-
-        async function generateProfileHTML(userName, userLogin, userPhoto) {
-            // Filter out chat messages
-            const { data: scores } = await supabaseClient.from('scores').select('*').eq('user_name', userName).neq('proof_file_type', 'chat_msg').order('created_at', {ascending:false});
-            const p = scores.reduce((s,a)=>s+(a.pikmi||0),0);
-            const e = scores.reduce((s,a)=>s+(a.eball||0),0);
-            
-            const avatarHtml = renderAvatar({name: userName, photo_url: userPhoto}, 'large');
-            const files = scores.filter(s => s.proof_file_url);
-
-            return `
-                <div style="margin:0 auto 15px; display:flex; justify-content:center;">${avatarHtml}</div>
-                <h2 style="margin-bottom:5px;">${userName}</h2>
-                ${userLogin ? `<div style="color:#64748b; margin-bottom:20px;">${userLogin}</div>` : ''}
-                
-                <div class="stats-grid">
-                     <div class="stat-box" style="background:#ecfdf5;"><div class="stat-num" style="color:var(--success)">${p}</div><div class="stat-label">Pikmi</div></div>
-                     <div class="stat-box" style="background:#fef2f2;"><div class="stat-num" style="color:var(--danger)">${e}</div><div class="stat-label">E-Ball</div></div>
-                     <div class="stat-box" style="background:#e0e7ff;"><div class="stat-num" style="color:var(--primary)">${p-e}</div><div class="stat-label">Итог</div></div>
-                </div>
-
-                ${files.length > 0 ? `
-                    <h4 style="text-align:left; margin: 20px 0 10px;">📸 Галерея</h4>
-                    <div class="gallery-grid">
-                        ${files.map(f => `<div class="gallery-item" onclick="window.open('${f.proof_file_url}')"><img src="${f.proof_file_url}"></div>`).join('')}
-                    </div>
-                ` : ''}
-
-                <div style="text-align:left; margin-top:20px;">
-                    <h4 style="margin-bottom:10px;">История</h4>
-                    ${scores.length === 0 ? '<div style="color:#999; font-size:13px;">Пусто</div>' : ''}
-                    ${scores.map(s => `
-                        <div style="font-size:13px; padding:10px; border-bottom:1px solid #eee;">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                                <span style="font-weight:bold; color:${(s.pikmi||0)>0 ? 'var(--success)' : 'var(--danger)'}">${(s.pikmi||0)>0 ? '⭐' : '⚠️'} ${s.pikmi || s.eball || 1}</span>
-                                <span style="color:#94a3b8;">${new Date(s.created_at).toLocaleDateString()}</span>
-                            </div>
-                            <div>${s.proof_text}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        async function loadMyProfile() {
-            document.getElementById('myProfileContent').innerHTML = 'Загрузка...';
-            const html = await generateProfileHTML(currentUser.name, currentUser.login, currentUser.photo_url);
-            document.getElementById('myProfileContent').innerHTML = html;
-        }
-
-        async function openUserProfile(userName) {
-            document.getElementById('userProfileModal').classList.add('visible');
-            document.getElementById('userProfileContent').innerHTML = '<div style="padding:40px;">Загрузка профиля...</div>';
-            
-            const { data: users } = await supabaseClient.from('users').select('photo_url').eq('name', userName).single();
-            const photo = users ? users.photo_url : null;
-            
-            const html = await generateProfileHTML(userName, null, photo); 
-            document.getElementById('userProfileContent').innerHTML = html;
-        }
-        function closeUserProfile() { document.getElementById('userProfileModal').classList.remove('visible'); }
-
-
-        // --- ACTIONS ---
-        function openVoteModal(name) {
-            selectedUser = name;
-            document.getElementById('voteModalTitle').textContent = `Оценить: ${name}`;
-            document.getElementById('voteModal').classList.add('visible');
-        }
-        function closeVoteModal() { document.getElementById('voteModal').classList.remove('visible'); }
-        
-        function updateVoteTypeInfo() {
-            const type = document.getElementById('voteType').value;
-            const el = document.getElementById('voteTypeInfo');
-            if(!type) { el.classList.add('hidden'); return; }
-            el.classList.remove('hidden');
-            el.textContent = type === 'pikmi' ? 'Вам нравится этот поступок' : 'Вы осуждаете этот поступок';
-            el.style.background = type === 'pikmi' ? '#d1fae5' : '#fee2e2';
-            el.style.color = type === 'pikmi' ? '#047857' : '#b91c1c';
-        }
-        
-        function updateFileName(inputId, labelId) {
-            const f = document.getElementById(inputId).files[0];
-            document.getElementById(labelId).textContent = f ? `📎 ${f.name}` : 'Прикрепить фото/видео';
-        }
-
-        async function uploadFile(file) {
-            if (!file) return null;
-            const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-            const { error } = await supabaseClient.storage.from('proofs').upload(fileName, file);
-            if (error) throw error;
-            const { data } = supabaseClient.storage.from('proofs').getPublicUrl(fileName);
-            return data.publicUrl;
-        }
-
-        async function submitVote() {
-            const type = document.getElementById('voteType').value;
-            const amt = document.getElementById('voteAmountSlider').value;
-            const txt = document.getElementById('proofText').value;
-            const file = document.getElementById('proofFile').files[0];
-            const msg = document.getElementById('voteMessage');
-            
-            if(!type || !txt) return showMsg(msg, 'Заполните тип и описание', 'error');
-            showMsg(msg, 'Отправка...', 'success');
-
-            try {
-                const fileUrl = await uploadFile(file);
-                const { error } = await supabaseClient.from('scores').insert({
-                    user_name: selectedUser,
-                    voter_login: currentUser.login,
-                    voter_name: currentUser.name,
-                    pikmi: type === 'pikmi' ? amt : 0,
-                    eball: type === 'eball' ? amt : 0,
-                    proof_text: txt,
-                    proof_file_url: fileUrl,
-                    proof_file_name: file ? file.name : null,
-                    proof_file_type: file ? file.type : null
-                });
-                if(error) throw error;
-                clearCache();
-                closeVoteModal();
-                loadMyStats();
-                loadUsers();
-                alert('Успешно!');
-            } catch(e) { showMsg(msg, 'Ошибка: ' + e.message, 'error'); }
-        }
-
-        function openNewIdeaModal() { document.getElementById('ideaModal').classList.add('visible'); }
-        function closeIdeaModal() { document.getElementById('ideaModal').classList.remove('visible'); }
-        
-        async function submitIdea() {
-             const txt = document.getElementById('ideaText').value;
-             const file = document.getElementById('ideaFile').files[0];
-             const msg = document.getElementById('ideaMessage');
-
-             if(!txt) return showMsg(msg, 'Напишите идею', 'error');
-             showMsg(msg, 'Отправка...', 'success');
-
-             try {
-                 const fileUrl = await uploadFile(file);
-                 await supabaseClient.from('scores').insert({
-                     user_name: 'IDEA', 
-                     voter_login: currentUser.login,
-                     voter_name: currentUser.name,
-                     proof_text: 'ИДЕЯ: ' + txt,
-                     proof_file_url: fileUrl
-                 });
-                 closeIdeaModal();
-                 loadVotingTab();
-             } catch(e) { showMsg(msg, 'Ошибка: ' + e.message, 'error'); }
-        }
-
-        // --- SETTINGS ---
-        function openSettings() { 
-            document.getElementById('settingsLogin').textContent = currentUser.login;
-            document.getElementById('themeToggle').checked = document.body.classList.contains('dark-theme');
-            document.getElementById('settingsModal').classList.add('visible'); 
-        }
-        function closeSettings() { document.getElementById('settingsModal').classList.remove('visible'); }
-
-        function toggleTheme() {
-            const isDark = document.getElementById('themeToggle').checked;
-            if(isDark) {
-                document.body.classList.add('dark-theme');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.body.classList.remove('dark-theme');
-                localStorage.setItem('theme', 'light');
+                // No need to call loadChatMessages(), Realtime will handle it
+            } catch(e) { alert('Ошибка отправки: ' + e.message); } 
+            finally {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                input.focus();
             }
         }
 
-        async function changePassword() {
-            const current = document.getElementById('currentPassword').value;
-            const newPass = document.getElementById('newPassword').value;
-            const confirmPass = document.getElementById('confirmPassword').value;
-            const msg = document.getElementById('changePasswordMessage');
+        // --- DATA LOADERS ---
+        async function loadMyStats() {
+            const { data } = await supabaseClient.from('scores').select('pikmi,eball,user_name').eq('user_name', currentUser.name);
+            const myActions = (data || []).filter(i => i.user_name !== 'CHAT');
+            const pikmi = myActions.reduce((s, a) => s + (a.pikmi||0), 0);
+            const eball = myActions.reduce((s, a) => s + (a.eball||0), 0);
+            document.getElementById('myStats').innerHTML = `
+                <div class="stat-box"><div class="stat-num" style="color:var(--success)">${pikmi}</div><div class="stat-label">Pikmi</div></div>
+                <div class="stat-box"><div class="stat-num" style="color:var(--danger)">${eball}</div><div class="stat-label">E-Ball</div></div>
+                <div class="stat-box"><div class="stat-num" style="color:var(--primary)">${pikmi - eball}</div><div class="stat-label">Рейтинг</div></div>
+            `;
+        }
 
-            if(!current || !newPass || !confirmPass) return showMsg(msg, 'Заполните все поля', 'error');
-            if(newPass !== confirmPass) return showMsg(msg, 'Пароли не совпадают', 'error');
+        async function loadUsers() {
+            const { data: uData } = await supabaseClient.from('users').select('id,name,login,photo_url');
+            const { data: sData } = await supabaseClient.from('scores').select('user_name,pikmi,eball');
+            const validScores = (sData || []).filter(s => s.user_name !== 'CHAT');
+            window.allUsersData = (uData||[]).map(u => {
+                if(u.login === currentUser.login) return null;
+                const us = validScores.filter(s => s.user_name === u.name);
+                const p = us.reduce((a,b)=>a+(b.pikmi||0),0);
+                const e = us.reduce((a,b)=>a+(b.eball||0),0);
+                return { ...u, pikmiCount: p, eballCount: e, totalRating: p - e };
+            }).filter(u => u);
+            renderUsersList(window.allUsersData);
+        }
 
+        function renderUsersList(data) {
+            const list = document.getElementById('usersList');
+            list.innerHTML = '';
+            data.forEach(u => {
+                const avatar = u.photo_url ? `<img src="${u.photo_url}" class="avatar">` : `<div class="avatar">${u.name[0]}</div>`;
+                const div = document.createElement('div'); div.className = 'card';
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; cursor:pointer;" onclick="openUserProfile('${u.name}')">
+                        <div style="display:flex; gap:15px; align-items:center;">${avatar}
+                            <div><div style="font-weight:800; font-size:16px;">${u.name}</div><div><span class="stats-badge badge-pikmi">⭐ ${u.pikmiCount}</span><span class="stats-badge badge-eball">⚠️ ${u.eballCount}</span></div></div>
+                        </div>
+                        <div style="font-size:24px; font-weight:900; color:var(--primary);">${u.totalRating}</div>
+                    </div>
+                    <div style="display:flex; gap:10px;"><button onclick="openVoteModal('${u.name}')" class="btn btn-primary" style="flex:2;">Оценить</button></div>`;
+                list.appendChild(div);
+            });
+        }
+
+        function filterUsers() {
+            const s = document.getElementById('searchUsers').value.toLowerCase();
+            if(!window.allUsersData) return;
+            let filtered = window.allUsersData.filter(u => u.name.toLowerCase().includes(s));
+            filtered.sort((a,b) => b.totalRating - a.totalRating);
+            renderUsersList(filtered);
+        }
+
+        async function loadCringeTab() {
+            const { data: scores } = await supabaseClient.from('scores').select('*').neq('user_name', 'CHAT').order('created_at', {ascending:false});
+            const byDate = {};
+            scores.forEach(s => { const d = new Date(s.created_at).toLocaleDateString('ru-RU'); if(!byDate[d]) byDate[d] = []; byDate[d].push(s); });
+            let html = `<div class="stats-grid"><div class="stat-box"><div class="stat-num">${scores.length}</div><div class="stat-label">Всего</div></div></div>`;
+            Object.keys(byDate).forEach(d => {
+                html += `<div class="date-header">📅 ${d}</div>`;
+                byDate[d].forEach(s => {
+                    const isP = (s.pikmi||0)>0;
+                    html += `<div class="card" style="padding:15px; display:flex; gap:10px;"><div style="font-size:24px;">${isP?'⭐':'⚠️'}</div><div style="flex:1;"><div style="font-weight:bold; font-size:14px;">${s.user_name} <span style="color:#94a3b8;">от ${s.voter_name}</span></div><div style="color:#475569; margin-top:4px;">${s.proof_text}</div>${s.proof_file_url?`<a href="${s.proof_file_url}" target="_blank" style="display:block;margin-top:5px;font-size:12px;color:var(--primary);">📷 Файл</a>`:''}</div><div style="font-weight:bold;color:${isP?'var(--success)':'var(--danger)'}">${isP?s.pikmi:s.eball}</div></div>`;
+                });
+            });
+            document.getElementById('cringeContent').innerHTML = html;
+        }
+
+        async function loadVotingTab() {
+            const { data: ideas } = await supabaseClient.from('scores').select('*').ilike('proof_text', 'ИДЕЯ:%').order('created_at', {ascending:false});
+            const { data: votes } = await supabaseClient.from('scores').select('proof_text').or('proof_text.like.Голос за идею%,proof_text.like.Голос против идеи%');
+            const con = document.getElementById('votingContent');
+            if(!ideas?.length) { con.innerHTML = '<div style="text-align:center;color:#666;">Нет идей</div>'; return; }
+            con.innerHTML = ideas.map(i => {
+                const txt = i.proof_text.replace('ИДЕЯ: ', '');
+                const v = votes.filter(x => x.proof_text.includes(`#${i.id}`));
+                const y = v.filter(x => x.proof_text.includes('за')).length;
+                const n = v.filter(x => x.proof_text.includes('против')).length;
+                return `<div class="card"><div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="font-weight:bold; color:var(--primary);">${i.voter_name}</span><span style="color:#94a3b8; font-size:12px;">${new Date(i.created_at).toLocaleDateString()}</span></div><div style="margin-bottom:15px;">${txt}</div>${i.proof_file_url?`<img src="${i.proof_file_url}" style="width:100%;border-radius:12px;margin-bottom:15px;max-height:200px;object-fit:cover;">`:''}<div style="display:flex; gap:10px;"><button class="btn" style="flex:1;background:#ecfdf5;color:var(--success);" onclick="voteForIdea(${i.id},'plus')">👍 ${y}</button><button class="btn" style="flex:1;background:#fef2f2;color:var(--danger);" onclick="voteForIdea(${i.id},'minus')">👎 ${n}</button></div></div>`;
+            }).join('');
+        }
+
+        async function generateProfileHTML(userName, userLogin, userPhoto) {
+            const { data: scores } = await supabaseClient.from('scores').select('*').eq('user_name', userName).neq('user_name', 'CHAT').order('created_at', {ascending:false});
+            const p = scores.reduce((s,a)=>s+(a.pikmi||0),0); const e = scores.reduce((s,a)=>s+(a.eball||0),0);
+            const avatar = userPhoto ? `<img src="${userPhoto}" class="avatar-large">` : `<div class="avatar-large" style="background:var(--primary);display:flex;align-items:center;justify-content:center;color:white;">${userName[0]}</div>`;
+            const files = scores.filter(s => s.proof_file_url);
+            return `<div style="text-align:center;margin-bottom:20px;">${avatar}<h2 style="margin-bottom:5px;">${userName}</h2>${userLogin?`<div style="color:#64748b;">${userLogin}</div>`:''}</div><div class="stats-grid"><div class="stat-box" style="background:#ecfdf5;"><div class="stat-num" style="color:var(--success)">${p}</div><div class="stat-label">Pikmi</div></div><div class="stat-box" style="background:#fef2f2;"><div class="stat-num" style="color:var(--danger)">${e}</div><div class="stat-label">E-Ball</div></div><div class="stat-box" style="background:#e0e7ff;"><div class="stat-num" style="color:var(--primary)">${p-e}</div><div class="stat-label">Итог</div></div></div>${files.length>0?`<h4 style="margin:20px 0 10px;">📸 Галерея</h4><div class="gallery-grid">${files.map(f=>`<div class="gallery-item" onclick="window.open('${f.proof_file_url}')"><img src="${f.proof_file_url}"></div>`).join('')}</div>`:''}<h4 style="margin-top:20px;">История</h4>${scores.map(s=>`<div style="font-size:13px;padding:10px;border-bottom:1px solid #eee;"><div style="display:flex;justify-content:space-between;"><strong>${(s.pikmi||0)>0?'⭐':'⚠️'} ${s.pikmi||s.eball}</strong><span style="color:#94a3b8;">${new Date(s.created_at).toLocaleDateString()}</span></div><div>${s.proof_text}</div></div>`).join('')}`;
+        }
+
+        async function loadMyProfile() {
+            document.getElementById('myProfileContent').innerHTML = await generateProfileHTML(currentUser.name, currentUser.login, currentUser.photo_url);
+        }
+        async function openUserProfile(name) {
+            document.getElementById('userProfileModal').classList.add('visible');
+            document.getElementById('userProfileContent').innerHTML = 'Загрузка...';
+            const { data } = await supabaseClient.from('users').select('photo_url').eq('name', name).single();
+            document.getElementById('userProfileContent').innerHTML = await generateProfileHTML(name, null, data?.photo_url);
+        }
+        function closeUserProfile() { document.getElementById('userProfileModal').classList.remove('visible'); }
+
+        // --- UTILS ---
+        function openVoteModal(name) { selectedUser = name; document.getElementById('voteModalTitle').textContent = `Оценить: ${name}`; document.getElementById('voteModal').classList.add('visible'); }
+        function closeVoteModal() { document.getElementById('voteModal').classList.remove('visible'); }
+        function updateVoteTypeInfo() {
+             const t = document.getElementById('voteType').value; const el = document.getElementById('voteTypeInfo');
+             if(!t) { el.classList.add('hidden'); return; }
+             el.classList.remove('hidden'); el.textContent = t==='pikmi'?'Вам нравится этот поступок':'Вы осуждаете этот поступок';
+             el.style.color = t==='pikmi'?'#047857':'#b91c1c'; el.style.background = t==='pikmi'?'#d1fae5':'#fee2e2';
+        }
+        function updateFileName(id, lbl) { const f = document.getElementById(id).files[0]; document.getElementById(lbl).textContent = f?`📎 ${f.name}`:'Прикрепить файл'; }
+        async function uploadFile(f) {
+            if(!f) return null; const n = `${Date.now()}_${f.name.replace(/[^a-zA-Z0-9.]/g,'_')}`;
+            const { error } = await supabaseClient.storage.from('proofs').upload(n, f); if(error) throw error;
+            const { data } = supabaseClient.storage.from('proofs').getPublicUrl(n); return data.publicUrl;
+        }
+        async function submitVote() {
+            const type = document.getElementById('voteType').value, amt = document.getElementById('voteAmountSlider').value, txt = document.getElementById('proofText').value, file = document.getElementById('proofFile').files[0];
+            if(!type || !txt) return alert('Заполните все поля');
             try {
-                const { data: check } = await supabaseClient.rpc('check_login', { 
-                    p_login: currentUser.login, 
-                    p_password: current 
-                });
-                if(!check || check.length === 0) return showMsg(msg, 'Текущий пароль неверный', 'error');
-
-                const { error: upErr } = await supabaseClient.rpc('change_user_password', {
-                    p_login: currentUser.login,
-                    p_current_password: current,
-                    p_new_password: newPass
-                });
-
-                if(upErr) throw upErr;
-                showMsg(msg, '✅ Пароль изменен!', 'success');
-                document.getElementById('currentPassword').value = '';
-                document.getElementById('newPassword').value = '';
-                document.getElementById('confirmPassword').value = '';
-            } catch(e) { 
-                showMsg(msg, 'Ошибка: ' + e.message, 'error'); 
+                const url = await uploadFile(file);
+                await supabaseClient.from('scores').insert({ user_name: selectedUser, voter_login: currentUser.login, voter_name: currentUser.name, pikmi: type==='pikmi'?amt:0, eball: type==='eball'?amt:0, proof_text: txt, proof_file_url: url, proof_file_name: file?.name });
+                clearCache(); closeVoteModal(); loadMyStats(); loadUsers(); alert('Успешно!');
+            } catch(e) { alert(e.message); }
+        }
+        function openNewIdeaModal() { document.getElementById('ideaModal').classList.add('visible'); }
+        function closeIdeaModal() { document.getElementById('ideaModal').classList.remove('visible'); }
+        async function submitIdea() {
+             const txt = document.getElementById('ideaText').value, file = document.getElementById('ideaFile').files[0];
+             if(!txt) return;
+             try {
+                 const url = await uploadFile(file);
+                 await supabaseClient.from('scores').insert({ user_name: 'IDEA', voter_login: currentUser.login, voter_name: currentUser.name, proof_text: 'ИДЕЯ: '+txt, proof_file_url: url });
+                 closeIdeaModal(); loadVotingTab();
+             } catch(e) { alert(e.message); }
+        }
+        async function voteForIdea(id, type) {
+            try { await supabaseClient.from('scores').insert({ user_name: 'IDEA_VOTE', voter_login: currentUser.login, voter_name: currentUser.name, proof_text: type==='plus'?`Голос за идею #${id}`:`Голос против идеи #${id}` }); loadVotingTab(); } catch(e) { alert(e.message); }
+        }
+        
+        function openSettings() { document.getElementById('settingsLogin').textContent = currentUser.login; document.getElementById('settingsModal').classList.add('visible'); }
+        function closeSettings() { document.getElementById('settingsModal').classList.remove('visible'); }
+        function toggleTheme() {
+            if(document.getElementById('themeToggle').checked) { document.body.classList.add('dark-theme'); localStorage.setItem('theme','dark'); }
+            else { document.body.classList.remove('dark-theme'); localStorage.setItem('theme','light'); }
+        }
+        async function changePassword() {
+            const c = document.getElementById('currentPassword').value, n = document.getElementById('newPassword').value, cp = document.getElementById('confirmPassword').value;
+            if(!c || !n || !cp) return alert('Заполните поля'); if(n!==cp) return alert('Пароли не совпадают');
+            try {
+                const { data } = await supabaseClient.rpc('check_login', { p_login: currentUser.login, p_password: c });
+                if(!data?.length) return alert('Неверный текущий пароль');
+                await supabaseClient.rpc('change_user_password', { p_login: currentUser.login, p_current_password: c, p_new_password: n });
+                alert('Пароль изменен'); document.getElementById('settingsModal').classList.remove('visible');
+            } catch(e) { alert(e.message); }
+        }
+        async function keepAlivePing() {
+            const last = localStorage.getItem('lastKA'), now = Date.now();
+            if(!last || now-last > 432000000) { try{ await supabaseClient.from('users').select('id').limit(1); localStorage.setItem('lastKA', now); }catch(e){} }
+        }
+        async function autoCleanup() {
+            const last = localStorage.getItem('lastCL'), now = Date.now();
+            if(!last || now-last > 86400000) {
+                try {
+                    const d = new Date(); d.setDate(d.getDate()-3);
+                    const { data } = await supabaseClient.from('scores').select('id,proof_file_name').not('proof_file_name','is',null).lt('created_at', d.toISOString());
+                    if(data?.length) for(let i of data) { await supabaseClient.storage.from('proofs').remove([i.proof_file_name]); await supabaseClient.from('scores').update({proof_file_url:null,proof_file_name:null}).eq('id',i.id); }
+                    localStorage.setItem('lastCL', now);
+                } catch(e){}
             }
         }
     </script>
