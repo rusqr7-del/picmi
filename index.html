@@ -13,6 +13,7 @@
             --accent: #f093fb;
             --success: #10b981;
             --danger: #ef4444;
+            --gold: #fbbf24;
             --bg-glass: rgba(255, 255, 255, 0.85);
             --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
@@ -96,6 +97,25 @@
         }
         .card:hover { transform: translateY(-3px); background: #fff; }
 
+        /* ЛИДЕРЫ (ТОП) */
+        .leaders-section {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;
+        }
+        .leader-card {
+            padding: 20px; border-radius: 24px; text-align: center; position: relative; overflow: hidden;
+            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.15); color: white;
+        }
+        .leader-card.pikmi {
+            background: linear-gradient(135deg, #f59e0b 0%, #10b981 100%);
+        }
+        .leader-card.eball {
+            background: linear-gradient(135deg, #374151 0%, #ef4444 100%);
+        }
+        .leader-icon { font-size: 40px; margin-bottom: 5px; display: block; }
+        .leader-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }
+        .leader-name { font-size: 18px; font-weight: 800; margin: 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .leader-score { font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 10px; display: inline-block; }
+
         /* Аватар */
         .avatar {
             width: 60px; height: 60px; border-radius: 20px;
@@ -125,7 +145,7 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white; box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3); width: 100%;
         }
-        .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: scale(0.95); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; filter: grayscale(1); }
         
         input, select, textarea {
             width: 100%; padding: 15px; border: 2px solid #eef2ff;
@@ -134,25 +154,20 @@
         }
         input:focus, textarea:focus { outline: none; border-color: var(--primary); background: #fff; }
 
-        /* СЛАЙДЕР */
-        .slider-container { padding: 20px 0; margin: 10px 0 20px; }
-        .slider-labels { display: flex; justify-content: space-between; color: #64748b; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
-        .slider-value-display {
-            text-align: center; font-size: 36px; font-weight: 900; 
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+        /* ГОЛОСОВАНИЕ (ПРОГРЕСС БАР) */
+        .vote-bar-container {
+            background: #f1f5f9; height: 40px; border-radius: 12px; overflow: hidden;
+            position: relative; display: flex; margin-top: 10px;
         }
-        input[type=range] {
-            -webkit-appearance: none; width: 100%; height: 12px; border-radius: 10px;
-            background: linear-gradient(90deg, #e2e8f0 0%, #a5b4fc 100%); outline: none; padding: 0; margin: 0; border: none;
+        .vote-bar-yes {
+            background: var(--success); height: 100%; display: flex; align-items: center; justify-content: flex-start; padding-left: 10px; color: white; font-weight: bold; font-size: 12px; transition: width 0.5s ease;
         }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; appearance: none; width: 32px; height: 32px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            cursor: pointer; box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4); border: 3px solid white; transition: transform 0.2s;
+        .vote-bar-no {
+            background: var(--danger); height: 100%; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-weight: bold; font-size: 12px; transition: width 0.5s ease;
         }
-        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        .vote-text-overlay {
+            position: absolute; width: 100%; height: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; font-size: 12px; font-weight: 800; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); pointer-events: none;
+        }
 
         /* ЧАТ (FIXED) */
         .chat-container {
@@ -189,7 +204,6 @@
         .msg-sender { font-size: 10px; margin-bottom: 2px; opacity: 0.8; font-weight: 700; }
         .msg-time { font-size: 9px; margin-top: 2px; text-align: right; opacity: 0.7; }
         
-        /* Кнопка удаления сообщения */
         .msg-delete-btn {
             position: absolute; top: -8px; right: -8px; width: 20px; height: 20px;
             background: var(--danger); color: white; border-radius: 50%;
@@ -199,7 +213,6 @@
         }
         .message.mine:hover .msg-delete-btn { opacity: 1; transform: scale(1.1); }
 
-        /* Превью файла в чате */
         .file-preview-chip {
             width: 100%; background: #f1f5f9; border-radius: 8px; padding: 8px 12px;
             font-size: 12px; display: flex; justify-content: space-between; align-items: center;
@@ -242,11 +255,29 @@
         input:checked + .toggle-slider { background-color: var(--primary); }
         input:checked + .toggle-slider:before { transform: translateX(24px); }
 
-        /* Галерея */
+        /* Галерея и Слайдер */
         .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin: 20px 0; }
         .gallery-item { aspect-ratio: 1; background: #eee; border-radius: 12px; overflow: hidden; cursor: pointer; position: relative; }
         .gallery-item img, .gallery-item video { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
         .gallery-item:hover img { transform: scale(1.1); }
+
+        .slider-container { padding: 20px 0; margin: 10px 0 20px; }
+        .slider-labels { display: flex; justify-content: space-between; color: #64748b; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+        .slider-value-display {
+            text-align: center; font-size: 36px; font-weight: 900; 
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        input[type=range] {
+            -webkit-appearance: none; width: 100%; height: 12px; border-radius: 10px;
+            background: linear-gradient(90deg, #e2e8f0 0%, #a5b4fc 100%); outline: none; padding: 0; margin: 0; border: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 32px; height: 32px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            cursor: pointer; box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4); border: 3px solid white; transition: transform 0.2s;
+        }
 
         /* ДАТА В ИСТОРИИ */
         .date-header {
@@ -261,7 +292,7 @@
             background: #000000; 
             color: #e5e5e5; 
         }
-        body.dark-theme::before { display: none; } /* Убираем круги на фоне */
+        body.dark-theme::before { display: none; }
         
         body.dark-theme .header, 
         body.dark-theme .card, 
@@ -279,62 +310,32 @@
 
         body.dark-theme .tab { color: #666; }
         body.dark-theme .tab.active { 
-            background: #fff; 
-            color: #000; 
-            box-shadow: none; 
-            transform: none;
+            background: #fff; color: #000; box-shadow: none; transform: none;
         }
         
+        body.dark-theme .leader-card { box-shadow: none; border: 1px solid #333; }
+        body.dark-theme .leader-card.pikmi { background: linear-gradient(135deg, #1a1a1a 0%, #333 100%); border-color: #fff; }
+        body.dark-theme .leader-card.eball { background: linear-gradient(135deg, #000 0%, #111 100%); border-color: #333; }
+
+        body.dark-theme .vote-bar-container { background: #222; }
+        
         body.dark-theme .btn-primary {
-            background: #fff; 
-            color: #000; 
-            box-shadow: none;
-            border: 1px solid #fff;
+            background: #fff; color: #000; box-shadow: none; border: 1px solid #fff;
         }
         
         body.dark-theme input, 
         body.dark-theme textarea, 
         body.dark-theme select,
         body.dark-theme .file-preview-chip {
-            background: #1a1a1a; 
-            border-color: #333; 
-            color: #fff;
+            background: #1a1a1a; border-color: #333; color: #fff;
         }
 
-        body.dark-theme h1 { 
-            background: none; 
-            -webkit-text-fill-color: unset; 
-            color: #fff; 
-        }
-        
-        body.dark-theme .date-header { 
-            color: #fff; 
-            text-shadow: none; 
-            background: #111; 
-            border: 1px solid #333;
-        }
-        
-        body.dark-theme .message.others { 
-            background: #1a1a1a; 
-            color: #fff; 
-            border: 1px solid #333; 
-            box-shadow: none;
-        }
-        
-        body.dark-theme .message.mine {
-            background: #333;
-            color: #fff;
-            border: 1px solid #555;
-            box-shadow: none;
-        }
-
-        body.dark-theme .slider-value-display {
-            background: none; -webkit-text-fill-color: #fff;
-        }
-        
-        body.dark-theme input[type=range]::-webkit-slider-thumb {
-             background: #fff; border-color: #000;
-        }
+        body.dark-theme h1 { background: none; -webkit-text-fill-color: unset; color: #fff; }
+        body.dark-theme .date-header { color: #fff; text-shadow: none; background: #111; border: 1px solid #333; }
+        body.dark-theme .message.others { background: #1a1a1a; color: #fff; border: 1px solid #333; box-shadow: none; }
+        body.dark-theme .message.mine { background: #333; color: #fff; border: 1px solid #555; box-shadow: none; }
+        body.dark-theme .slider-value-display { background: none; -webkit-text-fill-color: #fff; }
+        body.dark-theme input[type=range]::-webkit-slider-thumb { background: #fff; border-color: #000; }
 
         .hidden { display: none !important; }
         .error-msg { color: var(--danger); text-align: center; margin-top: 10px; font-weight: 600; }
@@ -386,6 +387,7 @@
         </div>
 
         <div id="tab-main" class="tab-content active">
+            <div id="leadersSection" class="leaders-section"></div>
             <div id="myStats" class="stats-grid"></div>
             <div class="card" style="margin-top: 20px;">
                 <h3 style="margin-bottom: 15px; padding-left: 5px;">Участники</h3>
@@ -507,7 +509,7 @@
                 <div id="changePasswordMessage" class="hidden"></div>
             </div>
             <div style="margin-bottom: 20px; border-top: 1px solid #eee; padding-top: 20px; display: flex; justify-content: space-between; align-items: center;">
-                <h4 style="margin: 0;">🌑 Темная тема</h4>
+                <h4 style="margin: 0;">🌑 Темная тема (Noir)</h4>
                 <label class="toggle-switch">
                     <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
                     <span class="toggle-slider"></span>
@@ -545,7 +547,6 @@
                 document.getElementById('themeToggle').checked = true;
             }
             keepAlivePing();
-            autoCleanup();
         });
 
         // --- AUTH ---
@@ -606,7 +607,7 @@
             if(name === 'myProfile') loadMyProfile();
         }
 
-        // --- CHAT 2.0 (MEDIA + DELETE) ---
+        // --- CHAT 2.0 ---
         function initChat() {
             loadChatMessages();
             chatChannel = supabaseClient.channel('chat_room')
@@ -618,7 +619,6 @@
             chatPolling = setInterval(() => loadChatMessages(false), 5000);
         }
 
-        // Обработка выбора файла в чате
         function handleChatFileSelect(input) {
             const file = input.files[0];
             if (file) {
@@ -635,7 +635,6 @@
         async function deleteMessage(id) {
             if(confirm('Удалить сообщение?')) {
                 await supabaseClient.from('scores').delete().eq('id', id);
-                // UI обновится через Realtime
             }
         }
 
@@ -660,8 +659,6 @@
                 const html = sortedMsgs.map(m => {
                     const isMine = m.voter_name === currentUser.name;
                     const time = new Date(m.created_at).toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
-                    
-                    // Render Media
                     let mediaHtml = '';
                     if (m.proof_file_url) {
                         const ext = m.proof_file_url.split('.').pop().toLowerCase();
@@ -671,7 +668,6 @@
                             mediaHtml = `<img src="${m.proof_file_url}" onclick="window.open('${m.proof_file_url}')" style="max-width:100%; border-radius:8px; margin-top:5px; cursor:pointer;">`;
                         }
                     }
-
                     const deleteBtn = isMine ? `<div class="msg-delete-btn" onclick="deleteMessage(${m.id})">×</div>` : '';
 
                     return `
@@ -699,7 +695,6 @@
             const input = document.getElementById('chatInput');
             const fileInput = document.getElementById('chatFileInput');
             const btn = document.getElementById('sendBtn');
-            
             const text = input.value.trim();
             const file = fileInput.files[0];
 
@@ -711,12 +706,10 @@
             try {
                 let fileUrl = null;
                 let fileName = null;
-
                 if (file) {
                     fileUrl = await uploadFile(file);
                     fileName = file.name;
                 }
-
                 await supabaseClient.from('scores').insert({
                     user_name: 'CHAT',
                     voter_name: currentUser.name,
@@ -726,10 +719,8 @@
                     proof_file_name: fileName,
                     pikmi: 0, eball: 0
                 });
-
                 input.value = ''; 
                 clearChatFile();
-
             } catch(e) { alert('Ошибка отправки: ' + e.message); } 
             finally {
                 btn.disabled = false;
@@ -738,7 +729,7 @@
             }
         }
 
-        // --- DATA LOADERS ---
+        // --- DATA LOADERS (UPDATED FOR LEADERS) ---
         async function loadMyStats() {
             const { data } = await supabaseClient.from('scores').select('pikmi,eball,user_name').eq('user_name', currentUser.name);
             const myActions = (data || []).filter(i => i.user_name !== 'CHAT');
@@ -755,14 +746,53 @@
             const { data: uData } = await supabaseClient.from('users').select('id,name,login,photo_url');
             const { data: sData } = await supabaseClient.from('scores').select('user_name,pikmi,eball');
             const validScores = (sData || []).filter(s => s.user_name !== 'CHAT');
+            
+            let maxPikmi = -1;
+            let maxEball = -1;
+            let pikmiLeader = null;
+            let eballLeader = null;
+
             window.allUsersData = (uData||[]).map(u => {
                 if(u.login === currentUser.login) return null;
                 const us = validScores.filter(s => s.user_name === u.name);
                 const p = us.reduce((a,b)=>a+(b.pikmi||0),0);
                 const e = us.reduce((a,b)=>a+(b.eball||0),0);
+                
+                // Check for leaders
+                if(p > maxPikmi) { maxPikmi = p; pikmiLeader = {name: u.name, score: p}; }
+                if(e > maxEball) { maxEball = e; eballLeader = {name: u.name, score: e}; }
+
                 return { ...u, pikmiCount: p, eballCount: e, totalRating: p - e };
             }).filter(u => u);
+            
+            renderLeaders(pikmiLeader, eballLeader);
             renderUsersList(window.allUsersData);
+        }
+
+        function renderLeaders(pikmi, eball) {
+            const section = document.getElementById('leadersSection');
+            if(!pikmi && !eball) { section.innerHTML = ''; return; }
+            
+            let html = '';
+            if(pikmi) {
+                html += `
+                <div class="leader-card pikmi">
+                    <div class="leader-icon">👑</div>
+                    <div class="leader-title">Лидер Pikmi</div>
+                    <div class="leader-name">${pikmi.name}</div>
+                    <div class="leader-score">${pikmi.score} баллов</div>
+                </div>`;
+            }
+            if(eball) {
+                 html += `
+                <div class="leader-card eball">
+                    <div class="leader-icon">💀</div>
+                    <div class="leader-title">Отшельник</div>
+                    <div class="leader-name">${eball.name}</div>
+                    <div class="leader-score">${eball.score} баллов</div>
+                </div>`;
+            }
+            section.innerHTML = html;
         }
 
         function renderUsersList(data) {
@@ -791,7 +821,6 @@
             renderUsersList(filtered);
         }
 
-        // UPDATED CRINGE TAB (VIDEO SUPPORT)
         async function loadCringeTab() {
             const { data: scores } = await supabaseClient.from('scores').select('*').neq('user_name', 'CHAT').order('created_at', {ascending:false});
             const byDate = {};
@@ -801,8 +830,6 @@
                 html += `<div class="date-header">📅 ${d}</div>`;
                 byDate[d].forEach(s => {
                     const isP = (s.pikmi||0)>0;
-                    
-                    // Render Media Content
                     let mediaContent = '';
                     if(s.proof_file_url) {
                          const ext = s.proof_file_url.split('.').pop().toLowerCase();
@@ -812,7 +839,6 @@
                              mediaContent = `<a href="${s.proof_file_url}" target="_blank"><img src="${s.proof_file_url}" style="width:100%; border-radius:8px; margin-top:10px; object-fit:cover;"></a>`;
                          }
                     }
-
                     html += `
                     <div class="card" style="padding:15px;">
                         <div style="display:flex; gap:10px;">
@@ -830,18 +856,27 @@
             document.getElementById('cringeContent').innerHTML = html;
         }
 
+        // UPDATED VOTING TAB (PROGRESS BAR + 1 VOTE LIMIT)
         async function loadVotingTab() {
             const { data: ideas } = await supabaseClient.from('scores').select('*').ilike('proof_text', 'ИДЕЯ:%').order('created_at', {ascending:false});
-            const { data: votes } = await supabaseClient.from('scores').select('proof_text').or('proof_text.like.Голос за идею%,proof_text.like.Голос против идеи%');
+            const { data: votes } = await supabaseClient.from('scores').select('proof_text, voter_name').or('proof_text.like.Голос за идею%,proof_text.like.Голос против идеи%');
             const con = document.getElementById('votingContent');
             if(!ideas?.length) { con.innerHTML = '<div style="text-align:center;color:#666;">Нет идей</div>'; return; }
+            
             con.innerHTML = ideas.map(i => {
                 const txt = i.proof_text.replace('ИДЕЯ: ', '');
-                const v = votes.filter(x => x.proof_text.includes(`#${i.id}`));
-                const y = v.filter(x => x.proof_text.includes('за')).length;
-                const n = v.filter(x => x.proof_text.includes('против')).length;
+                const relevantVotes = votes.filter(x => x.proof_text.includes(`#${i.id}`));
+                const y = relevantVotes.filter(x => x.proof_text.includes('за')).length;
+                const n = relevantVotes.filter(x => x.proof_text.includes('против')).length;
                 
-                // Render Media (Video or Image)
+                // One Vote Check
+                const hasVoted = relevantVotes.some(v => v.voter_name === currentUser.name);
+                
+                // Percentage Calculation
+                const total = y + n;
+                const yPerc = total === 0 ? 50 : (y / total) * 100;
+                const nPerc = total === 0 ? 50 : (n / total) * 100;
+
                 let mediaHtml = '';
                 if(i.proof_file_url) {
                     const ext = i.proof_file_url.split('.').pop().toLowerCase();
@@ -852,38 +887,45 @@
                     }
                 }
 
-                return `<div class="card"><div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="font-weight:bold; color:var(--primary);">${i.voter_name}</span><span style="color:#94a3b8; font-size:12px;">${new Date(i.created_at).toLocaleDateString()}</span></div><div style="margin-bottom:15px;">${txt}</div>${mediaHtml}<div style="display:flex; gap:10px;"><button class="btn" style="flex:1;background:#ecfdf5;color:var(--success);" onclick="voteForIdea(${i.id},'plus')">👍 ${y}</button><button class="btn" style="flex:1;background:#fef2f2;color:var(--danger);" onclick="voteForIdea(${i.id},'minus')">👎 ${n}</button></div></div>`;
-            }).join('');
-        }
-
-        // UPDATED PROFILE (VIDEO GALLERY SUPPORT)
-        async function generateProfileHTML(userName, userLogin, userPhoto) {
-            const { data: scores } = await supabaseClient.from('scores').select('*').eq('user_name', userName).neq('user_name', 'CHAT').order('created_at', {ascending:false});
-            const p = scores.reduce((s,a)=>s+(a.pikmi||0),0); const e = scores.reduce((s,a)=>s+(a.eball||0),0);
-            const avatar = userPhoto ? `<img src="${userPhoto}" class="avatar-large">` : `<div class="avatar-large" style="background:var(--primary);display:flex;align-items:center;justify-content:center;color:white;">${userName[0]}</div>`;
-            const files = scores.filter(s => s.proof_file_url);
-            
-            const galleryHtml = files.map(f => {
-                const ext = f.proof_file_url.split('.').pop().toLowerCase();
-                if(['mp4','mov','webm'].includes(ext)) {
-                    return `<div class="gallery-item" onclick="window.open('${f.proof_file_url}')" style="position:relative;"><video src="${f.proof_file_url}" style="width:100%;height:100%;object-fit:cover;"></video><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:white;font-size:24px;">▶</div></div>`;
+                // Controls: Buttons or Progress Bar
+                let controls = '';
+                if (!hasVoted) {
+                    controls = `
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn" style="flex:1;background:#ecfdf5;color:var(--success);" onclick="voteForIdea(${i.id},'plus')">👍 За</button>
+                        <button class="btn" style="flex:1;background:#fef2f2;color:var(--danger);" onclick="voteForIdea(${i.id},'minus')">👎 Против</button>
+                    </div>
+                    <div style="font-size:11px; text-align:center; margin-top:10px; color:#94a3b8;">Всего голосов: ${total}</div>`;
+                } 
+                
+                // Always show bar if voted, or show below buttons for info
+                const bar = `
+                    <div class="vote-bar-container">
+                        <div class="vote-bar-yes" style="width:${yPerc}%"></div>
+                        <div class="vote-bar-no" style="width:${nPerc}%"></div>
+                        <div class="vote-text-overlay">
+                            <span>${Math.round(yPerc)}% (${y})</span>
+                            <span>${Math.round(nPerc)}% (${n})</span>
+                        </div>
+                    </div>
+                `;
+                
+                if (hasVoted) {
+                     controls = `<div style="text-align:center; color:var(--primary); font-weight:bold; font-size:12px; margin-bottom:5px;">Вы уже голосовали</div>${bar}`;
                 }
-                return `<div class="gallery-item" onclick="window.open('${f.proof_file_url}')"><img src="${f.proof_file_url}"></div>`;
+
+                return `
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <span style="font-weight:bold; color:var(--primary);">${i.voter_name}</span>
+                        <span style="color:#94a3b8; font-size:12px;">${new Date(i.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <div style="margin-bottom:15px;">${txt}</div>
+                    ${mediaHtml}
+                    ${controls}
+                </div>`;
             }).join('');
-
-            return `<div style="text-align:center;margin-bottom:20px;">${avatar}<h2 style="margin-bottom:5px;">${userName}</h2>${userLogin?`<div style="color:#64748b;">${userLogin}</div>`:''}</div><div class="stats-grid"><div class="stat-box" style="background:#ecfdf5;"><div class="stat-num" style="color:var(--success)">${p}</div><div class="stat-label">Pikmi</div></div><div class="stat-box" style="background:#fef2f2;"><div class="stat-num" style="color:var(--danger)">${e}</div><div class="stat-label">E-Ball</div></div><div class="stat-box" style="background:#e0e7ff;"><div class="stat-num" style="color:var(--primary)">${p-e}</div><div class="stat-label">Итог</div></div></div>${files.length>0?`<h4 style="margin:20px 0 10px;">📸 Галерея</h4><div class="gallery-grid">${galleryHtml}</div>`:''}<h4 style="margin-top:20px;">История</h4>${scores.map(s=>`<div style="font-size:13px;padding:10px;border-bottom:1px solid #eee;"><div style="display:flex;justify-content:space-between;"><strong>${(s.pikmi||0)>0?'⭐':'⚠️'} ${s.pikmi||s.eball}</strong><span style="color:#94a3b8;">${new Date(s.created_at).toLocaleDateString()}</span></div><div>${s.proof_text}</div></div>`).join('')}`;
         }
-
-        async function loadMyProfile() {
-            document.getElementById('myProfileContent').innerHTML = await generateProfileHTML(currentUser.name, currentUser.login, currentUser.photo_url);
-        }
-        async function openUserProfile(name) {
-            document.getElementById('userProfileModal').classList.add('visible');
-            document.getElementById('userProfileContent').innerHTML = 'Загрузка...';
-            const { data } = await supabaseClient.from('users').select('photo_url').eq('name', name).single();
-            document.getElementById('userProfileContent').innerHTML = await generateProfileHTML(name, null, data?.photo_url);
-        }
-        function closeUserProfile() { document.getElementById('userProfileModal').classList.remove('visible'); }
 
         // --- UTILS ---
         function openVoteModal(name) { selectedUser = name; document.getElementById('voteModalTitle').textContent = `Оценить: ${name}`; document.getElementById('voteModal').classList.add('visible'); }
@@ -954,19 +996,41 @@
         }
         async function keepAlivePing() {
             const last = localStorage.getItem('lastKA'), now = Date.now();
-            if(!last || now-last > 432000000) { try{ await supabaseClient.from('users').select('id').limit(1); localStorage.setItem('lastKA', now); }catch(e){} }
-        }
-        async function autoCleanup() {
-            const last = localStorage.getItem('lastCL'), now = Date.now();
-            if(!last || now-last > 86400000) {
-                try {
-                    const d = new Date(); d.setDate(d.getDate()-3);
-                    const { data } = await supabaseClient.from('scores').select('id,proof_file_name').not('proof_file_name','is',null).lt('created_at', d.toISOString());
-                    if(data?.length) for(let i of data) { await supabaseClient.storage.from('proofs').remove([i.proof_file_name]); await supabaseClient.from('scores').update({proof_file_url:null,proof_file_name:null}).eq('id',i.id); }
-                    localStorage.setItem('lastCL', now);
-                } catch(e){}
+            if(!last || now-last > 432000000) { 
+                try { 
+                    await supabaseClient.from('users').select('id').limit(1); 
+                    localStorage.setItem('lastKA', now); 
+                } catch(e){} 
             }
         }
+
+        async function generateProfileHTML(userName, userLogin, userPhoto) {
+            const { data: scores } = await supabaseClient.from('scores').select('*').eq('user_name', userName).neq('user_name', 'CHAT').order('created_at', {ascending:false});
+            const p = scores.reduce((s,a)=>s+(a.pikmi||0),0); const e = scores.reduce((s,a)=>s+(a.eball||0),0);
+            const avatar = userPhoto ? `<img src="${userPhoto}" class="avatar-large">` : `<div class="avatar-large" style="background:var(--primary);display:flex;align-items:center;justify-content:center;color:white;">${userName[0]}</div>`;
+            const files = scores.filter(s => s.proof_file_url);
+            
+            const galleryHtml = files.map(f => {
+                const ext = f.proof_file_url.split('.').pop().toLowerCase();
+                if(['mp4','mov','webm'].includes(ext)) {
+                    return `<div class="gallery-item" onclick="window.open('${f.proof_file_url}')" style="position:relative;"><video src="${f.proof_file_url}" style="width:100%;height:100%;object-fit:cover;"></video><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:white;font-size:24px;">▶</div></div>`;
+                }
+                return `<div class="gallery-item" onclick="window.open('${f.proof_file_url}')"><img src="${f.proof_file_url}"></div>`;
+            }).join('');
+
+            return `<div style="text-align:center;margin-bottom:20px;">${avatar}<h2 style="margin-bottom:5px;">${userName}</h2>${userLogin?`<div style="color:#64748b;">${userLogin}</div>`:''}</div><div class="stats-grid"><div class="stat-box" style="background:#ecfdf5;"><div class="stat-num" style="color:var(--success)">${p}</div><div class="stat-label">Pikmi</div></div><div class="stat-box" style="background:#fef2f2;"><div class="stat-num" style="color:var(--danger)">${e}</div><div class="stat-label">E-Ball</div></div><div class="stat-box" style="background:#e0e7ff;"><div class="stat-num" style="color:var(--primary)">${p-e}</div><div class="stat-label">Итог</div></div></div>${files.length>0?`<h4 style="margin:20px 0 10px;">📸 Галерея</h4><div class="gallery-grid">${galleryHtml}</div>`:''}<h4 style="margin-top:20px;">История</h4>${scores.map(s=>`<div style="font-size:13px;padding:10px;border-bottom:1px solid #eee;"><div style="display:flex;justify-content:space-between;"><strong>${(s.pikmi||0)>0?'⭐':'⚠️'} ${s.pikmi||s.eball}</strong><span style="color:#94a3b8;">${new Date(s.created_at).toLocaleDateString()}</span></div><div>${s.proof_text}</div></div>`).join('')}`;
+        }
+
+        async function loadMyProfile() {
+            document.getElementById('myProfileContent').innerHTML = await generateProfileHTML(currentUser.name, currentUser.login, currentUser.photo_url);
+        }
+        async function openUserProfile(name) {
+            document.getElementById('userProfileModal').classList.add('visible');
+            document.getElementById('userProfileContent').innerHTML = 'Загрузка...';
+            const { data } = await supabaseClient.from('users').select('photo_url').eq('name', name).single();
+            document.getElementById('userProfileContent').innerHTML = await generateProfileHTML(name, null, data?.photo_url);
+        }
+        function closeUserProfile() { document.getElementById('userProfileModal').classList.remove('visible'); }
     </script>
 </body>
 </html>
