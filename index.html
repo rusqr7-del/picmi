@@ -26,7 +26,7 @@
             min-height: 100vh;
             color: #1f2937;
             padding-bottom: 80px;
-            transition: background 0.3s;
+            transition: background 0.3s, color 0.3s;
         }
 
         body::before {
@@ -169,12 +169,12 @@
             position: absolute; bottom: 0; left: 0; width: 100%;
             padding: 15px; background: rgba(255,255,255,0.95);
             backdrop-filter: blur(10px); border-top: 1px solid #eee;
-            display: flex; gap: 10px; align-items: center;
+            display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
         }
         .message {
             max-width: 80%; padding: 10px 16px; border-radius: 18px;
             font-size: 14px; line-height: 1.4; word-wrap: break-word;
-            animation: slideInChat 0.3s ease;
+            animation: slideInChat 0.3s ease; position: relative;
         }
         @keyframes slideInChat { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -188,6 +188,24 @@
         }
         .msg-sender { font-size: 10px; margin-bottom: 2px; opacity: 0.8; font-weight: 700; }
         .msg-time { font-size: 9px; margin-top: 2px; text-align: right; opacity: 0.7; }
+        
+        /* Кнопка удаления сообщения */
+        .msg-delete-btn {
+            position: absolute; top: -8px; right: -8px; width: 20px; height: 20px;
+            background: var(--danger); color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; cursor: pointer; opacity: 0; transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10;
+        }
+        .message.mine:hover .msg-delete-btn { opacity: 1; transform: scale(1.1); }
+
+        /* Превью файла в чате */
+        .file-preview-chip {
+            width: 100%; background: #f1f5f9; border-radius: 8px; padding: 8px 12px;
+            font-size: 12px; display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 5px; display: none;
+        }
+        .file-preview-chip.visible { display: flex; }
 
         /* Модалки */
         .modal {
@@ -238,21 +256,86 @@
             border-radius: 10px; display: inline-block;
         }
 
-        /* Темная тема */
-        body.dark-theme { background: #0f172a; color: #f1f5f9; }
-        body.dark-theme .header, body.dark-theme .card, body.dark-theme .modal-content, body.dark-theme .tabs, body.dark-theme .chat-container, body.dark-theme .chat-input-area {
-            background: #1e293b; color: #f1f5f9; border-color: #334155;
+        /* --- STRICT NOIR / DARK THEME OVERRIDES --- */
+        body.dark-theme { 
+            background: #000000; 
+            color: #e5e5e5; 
         }
-        body.dark-theme .tab { color: #94a3b8; }
-        body.dark-theme .tab.active { color: #fff; }
-        body.dark-theme input, body.dark-theme textarea, body.dark-theme select {
-            background: #334155; border-color: #475569; color: #fff;
-        }
-        body.dark-theme .stat-box { background: #334155; }
-        body.dark-theme h1 { -webkit-text-fill-color: unset; color: #fff; background: none; }
-        body.dark-theme .date-header { color: #f8fafc; text-shadow: none; background: rgba(0,0,0,0.3); }
-        body.dark-theme .message.others { background: #334155; color: #fff; }
+        body.dark-theme::before { display: none; } /* Убираем круги на фоне */
         
+        body.dark-theme .header, 
+        body.dark-theme .card, 
+        body.dark-theme .modal-content, 
+        body.dark-theme .chat-container, 
+        body.dark-theme .chat-input-area,
+        body.dark-theme .stat-box,
+        body.dark-theme .auth-card,
+        body.dark-theme .tabs {
+            background: #111111; 
+            color: #f1f5f9; 
+            border: 1px solid #333;
+            box-shadow: none;
+        }
+
+        body.dark-theme .tab { color: #666; }
+        body.dark-theme .tab.active { 
+            background: #fff; 
+            color: #000; 
+            box-shadow: none; 
+            transform: none;
+        }
+        
+        body.dark-theme .btn-primary {
+            background: #fff; 
+            color: #000; 
+            box-shadow: none;
+            border: 1px solid #fff;
+        }
+        
+        body.dark-theme input, 
+        body.dark-theme textarea, 
+        body.dark-theme select,
+        body.dark-theme .file-preview-chip {
+            background: #1a1a1a; 
+            border-color: #333; 
+            color: #fff;
+        }
+
+        body.dark-theme h1 { 
+            background: none; 
+            -webkit-text-fill-color: unset; 
+            color: #fff; 
+        }
+        
+        body.dark-theme .date-header { 
+            color: #fff; 
+            text-shadow: none; 
+            background: #111; 
+            border: 1px solid #333;
+        }
+        
+        body.dark-theme .message.others { 
+            background: #1a1a1a; 
+            color: #fff; 
+            border: 1px solid #333; 
+            box-shadow: none;
+        }
+        
+        body.dark-theme .message.mine {
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            box-shadow: none;
+        }
+
+        body.dark-theme .slider-value-display {
+            background: none; -webkit-text-fill-color: #fff;
+        }
+        
+        body.dark-theme input[type=range]::-webkit-slider-thumb {
+             background: #fff; border-color: #000;
+        }
+
         .hidden { display: none !important; }
         .error-msg { color: var(--danger); text-align: center; margin-top: 10px; font-weight: 600; }
         .success-msg { color: var(--success); text-align: center; margin-top: 10px; font-weight: 600; }
@@ -304,7 +387,7 @@
 
         <div id="tab-main" class="tab-content active">
             <div id="myStats" class="stats-grid"></div>
-            <div style="background: rgba(255,255,255,0.5); border-radius: 24px; padding: 15px; margin-top: 20px; backdrop-filter: blur(10px);">
+            <div class="card" style="margin-top: 20px;">
                 <h3 style="margin-bottom: 15px; padding-left: 5px;">Участники</h3>
                 <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                     <input type="text" id="searchUsers" placeholder="🔍 Поиск по имени..." oninput="filterUsers()" style="margin: 0;">
@@ -319,7 +402,15 @@
                     <div style="text-align: center; color: #94a3b8; margin-top: 20px;">Загрузка...</div>
                 </div>
                 <div class="chat-input-area">
-                    <input type="text" id="chatInput" placeholder="Написать..." style="margin: 0; border-radius: 50px;" onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <div id="chatFilePreview" class="file-preview-chip">
+                        <span id="chatFileName">file.jpg</span>
+                        <button onclick="clearChatFile()" style="background:none;border:none;color:var(--danger);font-weight:bold;cursor:pointer;">×</button>
+                    </div>
+                    
+                    <label for="chatFileInput" class="btn" style="background: #f1f5f9; color: #475569; border-radius: 50%; width: 40px; height: 40px; padding: 0; flex-shrink: 0;">📎</label>
+                    <input type="file" id="chatFileInput" accept="image/*,video/*" style="display: none;" onchange="handleChatFileSelect(this)">
+                    
+                    <input type="text" id="chatInput" placeholder="Написать..." style="margin: 0; border-radius: 50px; flex: 1;" onkeypress="if(event.key === 'Enter') sendMessage()">
                     <button id="sendBtn" onclick="sendMessage()" class="btn btn-primary" style="width: auto; border-radius: 50%; padding: 12px; aspect-ratio: 1;">➤</button>
                 </div>
             </div>
@@ -416,7 +507,7 @@
                 <div id="changePasswordMessage" class="hidden"></div>
             </div>
             <div style="margin-bottom: 20px; border-top: 1px solid #eee; padding-top: 20px; display: flex; justify-content: space-between; align-items: center;">
-                <h4 style="margin: 0;">🌑 Темная тема</h4>
+                <h4 style="margin: 0;">🌑 Темная тема (Noir)</h4>
                 <label class="toggle-switch">
                     <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
                     <span class="toggle-slider"></span>
@@ -449,7 +540,10 @@
                 currentUser = JSON.parse(savedUser);
                 showMainPage();
             }
-            if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-theme');
+            if(localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-theme');
+                document.getElementById('themeToggle').checked = true;
+            }
             keepAlivePing();
             autoCleanup();
         });
@@ -512,23 +606,41 @@
             if(name === 'myProfile') loadMyProfile();
         }
 
-        // --- CHAT (FIXED & REALTIME) ---
+        // --- CHAT 2.0 (MEDIA + DELETE) ---
         function initChat() {
             loadChatMessages();
-            // Subscribe to Realtime Updates
             chatChannel = supabaseClient.channel('chat_room')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'scores', filter: 'user_name=eq.CHAT' }, payload => {
-                    loadChatMessages(true); // Play sound
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'scores' }, payload => {
+                    if(payload.new && payload.new.user_name === 'CHAT') loadChatMessages(true);
+                    if(payload.eventType === 'DELETE') loadChatMessages(false);
                 })
                 .subscribe();
-            
-            // Backup Polling (every 3s) just in case
-            chatPolling = setInterval(() => loadChatMessages(false), 3000);
+            chatPolling = setInterval(() => loadChatMessages(false), 5000);
+        }
+
+        // Обработка выбора файла в чате
+        function handleChatFileSelect(input) {
+            const file = input.files[0];
+            if (file) {
+                document.getElementById('chatFileName').textContent = file.name;
+                document.getElementById('chatFilePreview').classList.add('visible');
+            }
+        }
+
+        function clearChatFile() {
+            document.getElementById('chatFileInput').value = '';
+            document.getElementById('chatFilePreview').classList.remove('visible');
+        }
+
+        async function deleteMessage(id) {
+            if(confirm('Удалить сообщение?')) {
+                await supabaseClient.from('scores').delete().eq('id', id);
+                // UI обновится через Realtime
+            }
         }
 
         async function loadChatMessages(playSound = false) {
             try {
-                // Fetch 50 NEWEST messages
                 const { data: msgs, error } = await supabaseClient
                     .from('scores')
                     .select('*')
@@ -544,21 +656,35 @@
                     return;
                 }
 
-                // Reverse to show correctly (Oldest at top, Newest at bottom)
                 const sortedMsgs = msgs.reverse();
                 const html = sortedMsgs.map(m => {
                     const isMine = m.voter_name === currentUser.name;
                     const time = new Date(m.created_at).toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+                    
+                    // Render Media
+                    let mediaHtml = '';
+                    if (m.proof_file_url) {
+                        const ext = m.proof_file_url.split('.').pop().toLowerCase();
+                        if (['mp4', 'mov', 'webm'].includes(ext)) {
+                            mediaHtml = `<video src="${m.proof_file_url}" controls style="max-width:100%; border-radius:8px; margin-top:5px;"></video>`;
+                        } else {
+                            mediaHtml = `<img src="${m.proof_file_url}" onclick="window.open('${m.proof_file_url}')" style="max-width:100%; border-radius:8px; margin-top:5px; cursor:pointer;">`;
+                        }
+                    }
+
+                    const deleteBtn = isMine ? `<div class="msg-delete-btn" onclick="deleteMessage(${m.id})">×</div>` : '';
+
                     return `
                         <div class="message ${isMine ? 'mine' : 'others'}">
+                            ${deleteBtn}
                             <div class="msg-sender">${m.voter_name}</div>
-                            <div>${m.proof_text}</div>
+                            <div>${m.proof_text || ''}</div>
+                            ${mediaHtml}
                             <div class="msg-time">${time}</div>
                         </div>
                     `;
                 }).join('');
 
-                // Only update if changed to prevent jitter
                 if(container.innerHTML !== html) {
                     container.innerHTML = html;
                     container.scrollTop = container.scrollHeight;
@@ -571,23 +697,39 @@
 
         async function sendMessage() {
             const input = document.getElementById('chatInput');
+            const fileInput = document.getElementById('chatFileInput');
             const btn = document.getElementById('sendBtn');
-            const text = input.value.trim();
-            if(!text) return;
             
-            input.value = ''; 
+            const text = input.value.trim();
+            const file = fileInput.files[0];
+
+            if(!text && !file) return;
+            
             btn.disabled = true;
             btn.style.opacity = '0.5';
 
             try {
+                let fileUrl = null;
+                let fileName = null;
+
+                if (file) {
+                    fileUrl = await uploadFile(file);
+                    fileName = file.name;
+                }
+
                 await supabaseClient.from('scores').insert({
-                    user_name: 'CHAT', // Special user for chat room
+                    user_name: 'CHAT',
                     voter_name: currentUser.name,
                     voter_login: currentUser.login,
                     proof_text: text,
+                    proof_file_url: fileUrl,
+                    proof_file_name: fileName,
                     pikmi: 0, eball: 0
                 });
-                // No need to call loadChatMessages(), Realtime will handle it
+
+                input.value = ''; 
+                clearChatFile();
+
             } catch(e) { alert('Ошибка отправки: ' + e.message); } 
             finally {
                 btn.disabled = false;
@@ -649,6 +791,7 @@
             renderUsersList(filtered);
         }
 
+        // UPDATED CRINGE TAB (VIDEO SUPPORT)
         async function loadCringeTab() {
             const { data: scores } = await supabaseClient.from('scores').select('*').neq('user_name', 'CHAT').order('created_at', {ascending:false});
             const byDate = {};
@@ -658,7 +801,30 @@
                 html += `<div class="date-header">📅 ${d}</div>`;
                 byDate[d].forEach(s => {
                     const isP = (s.pikmi||0)>0;
-                    html += `<div class="card" style="padding:15px; display:flex; gap:10px;"><div style="font-size:24px;">${isP?'⭐':'⚠️'}</div><div style="flex:1;"><div style="font-weight:bold; font-size:14px;">${s.user_name} <span style="color:#94a3b8;">от ${s.voter_name}</span></div><div style="color:#475569; margin-top:4px;">${s.proof_text}</div>${s.proof_file_url?`<a href="${s.proof_file_url}" target="_blank" style="display:block;margin-top:5px;font-size:12px;color:var(--primary);">📷 Файл</a>`:''}</div><div style="font-weight:bold;color:${isP?'var(--success)':'var(--danger)'}">${isP?s.pikmi:s.eball}</div></div>`;
+                    
+                    // Render Media Content
+                    let mediaContent = '';
+                    if(s.proof_file_url) {
+                         const ext = s.proof_file_url.split('.').pop().toLowerCase();
+                         if(['mp4','mov','webm'].includes(ext)) {
+                             mediaContent = `<video src="${s.proof_file_url}" controls style="width:100%; border-radius:8px; margin-top:10px;"></video>`;
+                         } else {
+                             mediaContent = `<a href="${s.proof_file_url}" target="_blank"><img src="${s.proof_file_url}" style="width:100%; border-radius:8px; margin-top:10px; object-fit:cover;"></a>`;
+                         }
+                    }
+
+                    html += `
+                    <div class="card" style="padding:15px;">
+                        <div style="display:flex; gap:10px;">
+                            <div style="font-size:24px;">${isP?'⭐':'⚠️'}</div>
+                            <div style="flex:1;">
+                                <div style="font-weight:bold; font-size:14px;">${s.user_name} <span style="color:#94a3b8;">от ${s.voter_name}</span></div>
+                                <div style="color:#475569; margin-top:4px;">${s.proof_text}</div>
+                                ${mediaContent}
+                            </div>
+                            <div style="font-weight:bold;color:${isP?'var(--success)':'var(--danger)'}">${isP?s.pikmi:s.eball}</div>
+                        </div>
+                    </div>`;
                 });
             });
             document.getElementById('cringeContent').innerHTML = html;
@@ -674,16 +840,38 @@
                 const v = votes.filter(x => x.proof_text.includes(`#${i.id}`));
                 const y = v.filter(x => x.proof_text.includes('за')).length;
                 const n = v.filter(x => x.proof_text.includes('против')).length;
-                return `<div class="card"><div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="font-weight:bold; color:var(--primary);">${i.voter_name}</span><span style="color:#94a3b8; font-size:12px;">${new Date(i.created_at).toLocaleDateString()}</span></div><div style="margin-bottom:15px;">${txt}</div>${i.proof_file_url?`<img src="${i.proof_file_url}" style="width:100%;border-radius:12px;margin-bottom:15px;max-height:200px;object-fit:cover;">`:''}<div style="display:flex; gap:10px;"><button class="btn" style="flex:1;background:#ecfdf5;color:var(--success);" onclick="voteForIdea(${i.id},'plus')">👍 ${y}</button><button class="btn" style="flex:1;background:#fef2f2;color:var(--danger);" onclick="voteForIdea(${i.id},'minus')">👎 ${n}</button></div></div>`;
+                
+                // Render Media (Video or Image)
+                let mediaHtml = '';
+                if(i.proof_file_url) {
+                    const ext = i.proof_file_url.split('.').pop().toLowerCase();
+                    if(['mp4','mov','webm'].includes(ext)) {
+                        mediaHtml = `<video src="${i.proof_file_url}" controls style="width:100%; border-radius:12px; margin-bottom:15px;"></video>`;
+                    } else {
+                        mediaHtml = `<img src="${i.proof_file_url}" style="width:100%;border-radius:12px;margin-bottom:15px;max-height:200px;object-fit:cover;">`;
+                    }
+                }
+
+                return `<div class="card"><div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="font-weight:bold; color:var(--primary);">${i.voter_name}</span><span style="color:#94a3b8; font-size:12px;">${new Date(i.created_at).toLocaleDateString()}</span></div><div style="margin-bottom:15px;">${txt}</div>${mediaHtml}<div style="display:flex; gap:10px;"><button class="btn" style="flex:1;background:#ecfdf5;color:var(--success);" onclick="voteForIdea(${i.id},'plus')">👍 ${y}</button><button class="btn" style="flex:1;background:#fef2f2;color:var(--danger);" onclick="voteForIdea(${i.id},'minus')">👎 ${n}</button></div></div>`;
             }).join('');
         }
 
+        // UPDATED PROFILE (VIDEO GALLERY SUPPORT)
         async function generateProfileHTML(userName, userLogin, userPhoto) {
             const { data: scores } = await supabaseClient.from('scores').select('*').eq('user_name', userName).neq('user_name', 'CHAT').order('created_at', {ascending:false});
             const p = scores.reduce((s,a)=>s+(a.pikmi||0),0); const e = scores.reduce((s,a)=>s+(a.eball||0),0);
             const avatar = userPhoto ? `<img src="${userPhoto}" class="avatar-large">` : `<div class="avatar-large" style="background:var(--primary);display:flex;align-items:center;justify-content:center;color:white;">${userName[0]}</div>`;
             const files = scores.filter(s => s.proof_file_url);
-            return `<div style="text-align:center;margin-bottom:20px;">${avatar}<h2 style="margin-bottom:5px;">${userName}</h2>${userLogin?`<div style="color:#64748b;">${userLogin}</div>`:''}</div><div class="stats-grid"><div class="stat-box" style="background:#ecfdf5;"><div class="stat-num" style="color:var(--success)">${p}</div><div class="stat-label">Pikmi</div></div><div class="stat-box" style="background:#fef2f2;"><div class="stat-num" style="color:var(--danger)">${e}</div><div class="stat-label">E-Ball</div></div><div class="stat-box" style="background:#e0e7ff;"><div class="stat-num" style="color:var(--primary)">${p-e}</div><div class="stat-label">Итог</div></div></div>${files.length>0?`<h4 style="margin:20px 0 10px;">📸 Галерея</h4><div class="gallery-grid">${files.map(f=>`<div class="gallery-item" onclick="window.open('${f.proof_file_url}')"><img src="${f.proof_file_url}"></div>`).join('')}</div>`:''}<h4 style="margin-top:20px;">История</h4>${scores.map(s=>`<div style="font-size:13px;padding:10px;border-bottom:1px solid #eee;"><div style="display:flex;justify-content:space-between;"><strong>${(s.pikmi||0)>0?'⭐':'⚠️'} ${s.pikmi||s.eball}</strong><span style="color:#94a3b8;">${new Date(s.created_at).toLocaleDateString()}</span></div><div>${s.proof_text}</div></div>`).join('')}`;
+            
+            const galleryHtml = files.map(f => {
+                const ext = f.proof_file_url.split('.').pop().toLowerCase();
+                if(['mp4','mov','webm'].includes(ext)) {
+                    return `<div class="gallery-item" onclick="window.open('${f.proof_file_url}')" style="position:relative;"><video src="${f.proof_file_url}" style="width:100%;height:100%;object-fit:cover;"></video><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:white;font-size:24px;">▶</div></div>`;
+                }
+                return `<div class="gallery-item" onclick="window.open('${f.proof_file_url}')"><img src="${f.proof_file_url}"></div>`;
+            }).join('');
+
+            return `<div style="text-align:center;margin-bottom:20px;">${avatar}<h2 style="margin-bottom:5px;">${userName}</h2>${userLogin?`<div style="color:#64748b;">${userLogin}</div>`:''}</div><div class="stats-grid"><div class="stat-box" style="background:#ecfdf5;"><div class="stat-num" style="color:var(--success)">${p}</div><div class="stat-label">Pikmi</div></div><div class="stat-box" style="background:#fef2f2;"><div class="stat-num" style="color:var(--danger)">${e}</div><div class="stat-label">E-Ball</div></div><div class="stat-box" style="background:#e0e7ff;"><div class="stat-num" style="color:var(--primary)">${p-e}</div><div class="stat-label">Итог</div></div></div>${files.length>0?`<h4 style="margin:20px 0 10px;">📸 Галерея</h4><div class="gallery-grid">${galleryHtml}</div>`:''}<h4 style="margin-top:20px;">История</h4>${scores.map(s=>`<div style="font-size:13px;padding:10px;border-bottom:1px solid #eee;"><div style="display:flex;justify-content:space-between;"><strong>${(s.pikmi||0)>0?'⭐':'⚠️'} ${s.pikmi||s.eball}</strong><span style="color:#94a3b8;">${new Date(s.created_at).toLocaleDateString()}</span></div><div>${s.proof_text}</div></div>`).join('')}`;
         }
 
         async function loadMyProfile() {
@@ -707,11 +895,16 @@
              el.style.color = t==='pikmi'?'#047857':'#b91c1c'; el.style.background = t==='pikmi'?'#d1fae5':'#fee2e2';
         }
         function updateFileName(id, lbl) { const f = document.getElementById(id).files[0]; document.getElementById(lbl).textContent = f?`📎 ${f.name}`:'Прикрепить файл'; }
+        
         async function uploadFile(f) {
-            if(!f) return null; const n = `${Date.now()}_${f.name.replace(/[^a-zA-Z0-9.]/g,'_')}`;
-            const { error } = await supabaseClient.storage.from('proofs').upload(n, f); if(error) throw error;
-            const { data } = supabaseClient.storage.from('proofs').getPublicUrl(n); return data.publicUrl;
+            if(!f) return null; 
+            const n = `${Date.now()}_${f.name.replace(/[^a-zA-Z0-9.]/g,'_')}`;
+            const { error } = await supabaseClient.storage.from('proofs').upload(n, f); 
+            if(error) throw error;
+            const { data } = supabaseClient.storage.from('proofs').getPublicUrl(n); 
+            return data.publicUrl;
         }
+
         async function submitVote() {
             const type = document.getElementById('voteType').value, amt = document.getElementById('voteAmountSlider').value, txt = document.getElementById('proofText').value, file = document.getElementById('proofFile').files[0];
             if(!type || !txt) return alert('Заполните все поля');
@@ -738,10 +931,17 @@
         
         function openSettings() { document.getElementById('settingsLogin').textContent = currentUser.login; document.getElementById('settingsModal').classList.add('visible'); }
         function closeSettings() { document.getElementById('settingsModal').classList.remove('visible'); }
+        
         function toggleTheme() {
-            if(document.getElementById('themeToggle').checked) { document.body.classList.add('dark-theme'); localStorage.setItem('theme','dark'); }
-            else { document.body.classList.remove('dark-theme'); localStorage.setItem('theme','light'); }
+            if(document.getElementById('themeToggle').checked) { 
+                document.body.classList.add('dark-theme'); 
+                localStorage.setItem('theme','dark'); 
+            } else { 
+                document.body.classList.remove('dark-theme'); 
+                localStorage.setItem('theme','light'); 
+            }
         }
+        
         async function changePassword() {
             const c = document.getElementById('currentPassword').value, n = document.getElementById('newPassword').value, cp = document.getElementById('confirmPassword').value;
             if(!c || !n || !cp) return alert('Заполните поля'); if(n!==cp) return alert('Пароли не совпадают');
