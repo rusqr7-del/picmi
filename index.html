@@ -32,7 +32,12 @@
             padding-bottom: 80px;
             transition: background 0.3s, color 0.3s;
         }
-
+<script>
+    // 'Временная ошибка'
+    document.write('<div style="display:flex;justify-content:center;align-items:center;height:100vh;font-size:2em;color:red;background:#fff;z-index:9999;position:fixed;top:0;left:0;width:100vw;heigh' +
+    't:100vh;">Ошибка E: временно недоступно</div>');
+    throw new Error("Ошибка E"); // Останавливаем выполнение скриптов
+</script>
         body::before {
             content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 25%);
